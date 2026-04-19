@@ -39,11 +39,22 @@
                         <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
                         Inizia a Guardare
                     </a>
-                    
-                    {{-- Bottone Segnalibro Preferiti (visivo per ora) --}}
-                    <button class="border border-gray-600 hover:border-orange-500 text-white hover:text-orange-500 p-3 rounded transition">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
-                    </button>
+
+                    {{-- Bottone Segnalibro Preferiti (Funzionante) --}}
+                    @auth
+                        @php
+                            $isFavorite = Auth::user()->favorites()
+                                ->where('favoritable_id', $heroAnime->mal_id)
+                                ->where('favoritable_type', 'App\Models\Anime')
+                                ->exists();
+                        @endphp
+                        <form action="{{ route('favorites.toggleAnime', $heroAnime->mal_id) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="border border-gray-600 hover:border-orange-500 text-white hover:text-orange-500 p-3 rounded transition">
+                                <svg class="w-6 h-6" fill="{{ $isFavorite ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                            </button>
+                        </form>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -124,16 +135,16 @@
         </div>
     </div>
 
-    {{-- 3. CAROSELLO: TOP 10 --}}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <h2 class="text-2xl font-bold mb-6 text-white uppercase tracking-wider">TOP 10 Più Votati</h2>
-        
-        <div x-data="{ 
+    {{-- 3. CAROSELLO: TOP 10 ANIME --}}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 border-t border-gray-900">
+        <h2 class="text-2xl font-bold mb-6 text-white uppercase tracking-wider">TOP 10 Anime Più Votati</h2>
+
+        <div x-data="{
                 scrollNext() { $refs.slider2.scrollBy({ left: 600, behavior: 'smooth' }); },
                 scrollPrev() { $refs.slider2.scrollBy({ left: -600, behavior: 'smooth' }); }
-            }" 
+            }"
             class="relative group">
-            
+
             {{-- Freccia Sinistra --}}
             <button @click="scrollPrev" class="absolute left-0 top-[40%] -translate-y-1/2 -ml-4 z-20 bg-black/80 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-orange-600 shadow-xl hidden md:block">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
@@ -150,6 +161,44 @@
                         </a>
                         <h3 class="mt-3 text-sm font-semibold text-gray-200 line-clamp-2">
                             {{ $anime->title }}
+                        </h3>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Freccia Destra --}}
+            <button @click="scrollNext" class="absolute right-0 top-[40%] -translate-y-1/2 -mr-4 z-20 bg-black/80 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-orange-600 shadow-xl hidden md:block">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    {{-- 4. CAROSELLO: TOP 10 MANGA --}}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 border-t border-gray-900">
+        <h2 class="text-2xl font-bold mb-6 text-white uppercase tracking-wider">TOP 10 Manga Più Votati</h2>
+
+        <div x-data="{
+                scrollNext() { $refs.slider3.scrollBy({ left: 600, behavior: 'smooth' }); },
+                scrollPrev() { $refs.slider3.scrollBy({ left: -600, behavior: 'smooth' }); }
+            }"
+            class="relative group">
+
+            {{-- Freccia Sinistra --}}
+            <button @click="scrollPrev" class="absolute left-0 top-[40%] -translate-y-1/2 -ml-4 z-20 bg-black/80 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-orange-600 shadow-xl hidden md:block">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+
+            <div x-ref="slider3" class="flex overflow-x-auto space-x-4 pb-6 hide-scrollbar snap-x snap-mandatory">
+                @foreach($top10Manga as $manga)
+                    <div class="flex-none w-40 md:w-52 snap-start group/card">
+                        <a href="{{ route('manga.show', $manga->mal_id) }}" class="block relative rounded-lg overflow-hidden aspect-[2/3] border border-gray-800 hover:border-orange-500 transition-colors shadow-lg">
+                            <img src="{{ $manga->image_url }}" class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300">
+                            <div class="absolute top-0 left-0 bg-orange-600 text-white text-xs font-bold px-2 py-1 rounded-br-lg">
+                                ⭐ {{ $manga->score }}
+                            </div>
+                        </a>
+                        <h3 class="mt-3 text-sm font-semibold text-gray-200 line-clamp-2">
+                            {{ $manga->title }}
                         </h3>
                     </div>
                 @endforeach

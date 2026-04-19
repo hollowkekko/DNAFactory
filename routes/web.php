@@ -19,11 +19,11 @@ use App\Http\Controllers\MangaController;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+}); */
 
-Route::get('/dashboard', [HomeController::class, 'index'])
+Route::get('/', [HomeController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -33,8 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
     Route::post('/favorites/anime/{mal_id}', [FavoriteController::class, 'toggleAnime'])->name('favorites.toggleAnime');
+    Route::post('/favorites/manga/{mal_id}', [FavoriteController::class, 'toggleManga'])->name('favorites.toggleManga');
 });
-
 
 Route::get('/anime', [AnimeController::class, 'index'])->name('anime.index');
 Route::get('/anime/{mal_id}', [AnimeController::class, 'show'])->name('anime.show');

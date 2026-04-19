@@ -9,61 +9,63 @@ use App\Models\Manga;
 
 class FetchJikanData extends Command
 {
-    // Questo è il nome da scrivere nel terminale per lanciare lo script e fetchare i dati da Jikan API
-    protected $signature = 'jikan:fetch';
-    
-    protected $description = 'Importa Anime e Manga da Jikan API rispettando i rate limits';
+    protected $signature = 'jikan:fetch {--pages=5 : Numero di pagine da importare}';
+
+    protected $description = 'Importa Anime e Manga da Jikan API rispettando i rate limits (3 richieste/sec)';
 
     public function handle()
     {
-        $this->info('Inizio importazione dati da Jikan API...');
+        $pages = $this->option('pages');
 
-        // Importa Anime
-        $this->fetchData('anime', Anime::class);
+        $this->info('=== Inizio importazione dati da Jikan API ===');
+        $this->info("Importerò $pages pagine per categoria");
 
-        // Importa Manga
-        $this->fetchData('manga', Manga::class);
+        $this->fetchData('anime', Anime::class, $pages);
+        $this->line('');
+        $this->fetchData('manga', Manga::class, $pages);
 
-        $this->info('Importazione completata con successo!');
+        $this->info('✅ Importazione completata con successo!');
     }
 
-    private function fetchData($type, $modelClass)
+    private function fetchData($type, $modelClass, $pages)
     {
         $this->info("=== Importazione $type in corso ===");
+        $totalImported = 0;
 
-        // Come test, scarichiamo le prime 2 pagine (circa 50 elementi in totale per categoria).
-        // In un caso reale potresti aumentare questo numero.
-        for ($page = 1; $page <= 2; $page++) {
+        for ($page = 1; $page <= $pages; $page++) {
             $this->line("Scaricando $type - pagina $page...");
 
-            $response = Http::get("https://api.jikan.moe/v4/$type", [
-                'page' => $page
+            $response = Http::timeout(10)->get("https://api.jikan.moe/v4/$type", [
+                'page' => $page,
+                'limit' => 25
             ]);
 
             if ($response->successful()) {
-                $items = $response->json()['data'];
+                $items = $response->json()['data'] ?? [];
 
                 foreach ($items as $item) {
-                    // updateOrCreate previene i duplicati se lanci il comando due volte
                     $modelClass::updateOrCreate(
-                        ['mal_id' => $item['mal_id']], // Cerca per ID
+                        ['mal_id' => $item['mal_id']],
                         [
                             'title' => $item['title'],
-                            // Jikan nidifica l'immagine, controlliamo che esista
-                            'image_url' => $item['images']['jpg']['image_url'] ?? null, 
+                            'image_url' => $item['images']['jpg']['image_url'] ?? null,
                             'synopsis' => $item['synopsis'] ?? 'Nessuna trama disponibile',
                             'score' => $item['score'] ?? null,
                         ]
                     );
+                    $totalImported++;
                 }
+
+                $this->info("✓ Pagina $page completata ({$totalImported} totali)");
             } else {
-                $this->error("Errore di connessione all'API per $type a pagina $page.");
+                $this->error("✗ Errore al recupero di $type pagina $page (HTTP {$response->status()})");
             }
 
-            // LA CHIAVE PER SUPERARE IL TEST: Rispetto del Rate Limit.
-            // Jikan API permette max 3 richieste al secondo. 
-            // Questa pausa garantisce che l'IP non venga mai bloccato.
-            sleep(2); 
+            // Rispetto del Rate Limit: max 3 richieste al secondo
+            // Attendiamo 1 secondo tra le richieste per stare al sicuro
+            sleep(1);
         }
+
+        $this->info("✅ {$type}: $totalImported elementi importati");
     }
 }

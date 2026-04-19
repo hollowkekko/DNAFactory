@@ -7,6 +7,7 @@ use App\Http\Controllers\AnimeController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MangaController;
+use App\Http\Controllers\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,8 @@ Route::get('/anime/{mal_id}', [AnimeController::class, 'show'])->name('anime.sho
 
 Route::get('/manga', [MangaController::class, 'index'])->name('manga.index');
 Route::get('/manga/{mal_id}', [MangaController::class, 'show'])->name('manga.show');
+
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 
 require __DIR__.'/auth.php';

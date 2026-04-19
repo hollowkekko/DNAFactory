@@ -51,6 +51,7 @@ class FetchJikanData extends Command
                             'image_url' => $item['images']['jpg']['image_url'] ?? null,
                             'synopsis' => $item['synopsis'] ?? 'Nessuna trama disponibile',
                             'score' => $item['score'] ?? null,
+                            'episodes' => $item['episodes'] ?? null,
                         ]
                     );
                     $totalImported++;

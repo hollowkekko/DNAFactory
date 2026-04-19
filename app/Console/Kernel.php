@@ -12,7 +12,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Importa anime e manga da Jikan API ogni giorno a mezzanotte
+        $schedule->command('jikan:fetch')
+            ->dailyAt('00:00')
+            ->withoutOverlapping()
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Jikan data import completed successfully');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Jikan data import failed');
+            });
     }
 
     /**

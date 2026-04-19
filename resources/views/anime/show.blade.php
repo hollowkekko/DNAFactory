@@ -21,10 +21,17 @@
                 <div class="p-8 w-full md:w-2/3 flex flex-col justify-between">
                     <div>
                         <h1 class="text-3xl font-bold mb-4">{{ $anime->title }}</h1>
-                        <span class="inline-block bg-yellow-100 text-yellow-800 text-sm font-bold px-3 py-1 rounded-full mb-6">
-                            ⭐ Voto: {{ $anime->score ?? 'N/A' }} / 10
-                        </span>
-                        
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            <span class="inline-block bg-yellow-100 text-yellow-800 text-sm font-bold px-3 py-1 rounded-full">
+                                ⭐ Voto: {{ $anime->score ?? 'N/A' }} / 10
+                            </span>
+                            @if($anime->episodes)
+                                <span class="inline-block bg-blue-100 text-blue-800 text-sm font-bold px-3 py-1 rounded-full">
+                                    📺 {{ $anime->episodes }} episodi
+                                </span>
+                            @endif
+                        </div>
+
                         <h3 class="text-lg font-bold mb-2">Trama</h3>
                         <p class="text-gray-600 leading-relaxed">
                             {{ $anime->synopsis }}

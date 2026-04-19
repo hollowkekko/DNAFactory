@@ -21,7 +21,7 @@
             @else
                 @if($animes->isNotEmpty())
                     <div class="mb-12">
-                        <h3 class="text-2xl font-bold mb-6">Anime</h3>
+                        <h3 class="text-2xl text-white font-bold mb-6">Anime</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
                             @foreach($animes as $anime)
                                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-200 flex flex-col group">
@@ -58,7 +58,7 @@
 
                 @if($mangas->isNotEmpty())
                     <div>
-                        <h3 class="text-2xl font-bold mb-6">Manga</h3>
+                        <h3 class="text-2xl text-white font-bold mb-6">Manga</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
                             @foreach($mangas as $manga)
                                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-200 flex flex-col group">

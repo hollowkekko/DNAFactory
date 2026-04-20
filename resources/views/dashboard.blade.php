@@ -1,11 +1,11 @@
 <x-app-layout>
     
-    {{-- 1. HERO SECTION GIGANTE --}}
+    {{-- 1. HERO SECTION --}}
     @if($heroAnime)
     <div class="relative w-full h-[70vh] lg:h-[80vh] bg-black overflow-hidden border-b border-gray-800">
         
         {{-- Sfondo Immagine Anime (Sfocato e ingrandito per fare da fondale) --}}
-        <img src="{{ $heroAnime->image_url }}" class="absolute inset-0 w-full h-full object-cover opacity-30 blur-sm scale-110">
+        <img src="{{ $heroAnime->image_url }}" class="absolute inset-0 w-full h-full object-cover opacity-30 blur-sm">
         
         {{-- Gradiente Nero per far leggere il testo --}}
         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
@@ -40,7 +40,7 @@
                         Inizia a Guardare
                     </a>
 
-                    {{-- Bottone Segnalibro Preferiti (Funzionante) --}}
+                    {{-- Bottone Segnalibro Preferiti (Funzionante con AJAX) --}}
                     @auth
                         @php
                             $isFavorite = Auth::user()->favorites()
@@ -48,12 +48,29 @@
                                 ->where('favoritable_type', 'App\Models\Anime')
                                 ->exists();
                         @endphp
-                        <form action="{{ route('favorites.toggleAnime', $heroAnime->mal_id) }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="border border-gray-600 hover:border-orange-500 text-white hover:text-orange-500 p-3 rounded transition">
-                                <svg class="w-6 h-6" fill="{{ $isFavorite ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                        <div x-data="{
+                            isFavorite: {{ $isFavorite ? 'true' : 'false' }},
+                            async toggleFavorite() {
+                                try {
+                                    const response = await fetch('{{ route('favorites.toggleAnime', $heroAnime->mal_id) }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'Accept': 'application/json'
+                                        }
+                                    });
+                                    if (response.ok) {
+                                        this.isFavorite = !this.isFavorite;
+                                    }
+                                } catch (error) {
+                                    console.error('Errore:', error);
+                                }
+                            }
+                        }">
+                            <button @click="toggleFavorite" class="border border-gray-600 hover:border-orange-500 text-white hover:text-orange-500 p-3 rounded transition">
+                                <svg class="w-6 h-6" :fill="isFavorite ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
                             </button>
-                        </form>
+                        </div>
                     @endauth
                 </div>
             </div>
@@ -135,9 +152,9 @@
         </div>
     </div>
 
-    {{-- 3. CAROSELLO: TOP 10 ANIME --}}
+    {{-- 3. CAROSELLO: TOP 15 ANIME --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 border-t border-gray-900">
-        <h2 class="text-2xl font-bold mb-6 text-white uppercase tracking-wider">TOP 10 Anime Più Votati</h2>
+        <h2 class="text-2xl font-bold mb-6 text-white uppercase tracking-wider">TOP 15 Anime Più Votati</h2>
 
         <div x-data="{
                 scrollNext() { $refs.slider2.scrollBy({ left: 600, behavior: 'smooth' }); },
@@ -151,7 +168,7 @@
             </button>
 
             <div x-ref="slider2" class="flex overflow-x-auto space-x-4 pb-6 hide-scrollbar snap-x snap-mandatory">
-                @foreach($top10Anime as $anime)
+                @foreach($top15Anime as $anime)
                     <div class="flex-none w-40 md:w-52 snap-start group/card">
                         <a href="{{ route('anime.show', $anime->mal_id) }}" class="block relative rounded-lg overflow-hidden aspect-[2/3] border border-gray-800 hover:border-orange-500 transition-colors shadow-lg">
                             <img src="{{ $anime->image_url }}" class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300">
@@ -173,9 +190,9 @@
         </div>
     </div>
 
-    {{-- 4. CAROSELLO: TOP 10 MANGA --}}
+    {{-- 4. CAROSELLO: TOP 15 MANGA --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 border-t border-gray-900">
-        <h2 class="text-2xl font-bold mb-6 text-white uppercase tracking-wider">TOP 10 Manga Più Votati</h2>
+        <h2 class="text-2xl font-bold mb-6 text-white uppercase tracking-wider">TOP 15 Manga Più Votati</h2>
 
         <div x-data="{
                 scrollNext() { $refs.slider3.scrollBy({ left: 600, behavior: 'smooth' }); },
@@ -189,7 +206,7 @@
             </button>
 
             <div x-ref="slider3" class="flex overflow-x-auto space-x-4 pb-6 hide-scrollbar snap-x snap-mandatory">
-                @foreach($top10Manga as $manga)
+                @foreach($top15Manga as $manga)
                     <div class="flex-none w-40 md:w-52 snap-start group/card">
                         <a href="{{ route('manga.show', $manga->mal_id) }}" class="block relative rounded-lg overflow-hidden aspect-[2/3] border border-gray-800 hover:border-orange-500 transition-colors shadow-lg">
                             <img src="{{ $manga->image_url }}" class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300">

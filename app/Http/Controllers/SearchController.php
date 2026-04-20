@@ -16,11 +16,11 @@ class SearchController extends Controller
         $mangas = collect();
 
         if (strlen($query) >= 2) {
-            $animes = Anime::where('title', 'LIKE', "%{$query}%")
+            $animes = Anime::whereRaw("LOWER(title) LIKE LOWER(?)", ["%{$query}%"])
                 ->limit(12)
                 ->get();
 
-            $mangas = Manga::where('title', 'LIKE', "%{$query}%")
+            $mangas = Manga::whereRaw("LOWER(title) LIKE LOWER(?)", ["%{$query}%"])
                 ->limit(12)
                 ->get();
         }

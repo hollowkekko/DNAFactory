@@ -85,7 +85,8 @@
 
             <button @click="scrollPrev" class="absolute left-0 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
 
-            <div x-ref="slider1" class="flex overflow-x-auto space-x-3 pb-4 hide-scrollbar snap-x snap-mandatory overflow-y-visible px-4 sm:px-6 lg:px-12 pt-8 relative">
+            <div x-ref="slider1" class="flex overflow-x-auto space-x-3 pb-4 hide-scrollbar snap-x snap-mandatory overflow-y-visible pt-8 relative">
+                <div style="width: 64px; flex-shrink: 0;"></div>
                 @foreach($recommendedAnime as $index => $anime)
                     <div class="flex-none w-[260px] snap-start group/card relative z-20"
                          x-data="{ isFavorite: {{ in_array($anime->mal_id, $favoriteAnimeIds) ? 'true' : 'false' }} }"
@@ -170,7 +171,7 @@
                 @endforeach
             </div>
 
-            <button @click="scrollNext" class="absolute -right-5 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+            <button @click="scrollNext" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
 
             {{-- Overlay fade su entrambi i lati (solo estremita) --}}
             <div class="absolute left-0 top-0 bottom-0 w-32 pointer-events-none z-10" style="background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, transparent 100%);"></div>
@@ -183,40 +184,42 @@
     <div class="w-full px-4 sm:px-6 lg:px-12 py-8">
         <h2 class="text-xl font-bold mb-4 text-white uppercase">TOP 10</h2>
 
-        <div x-data="{ scrollNext() { $refs.slider4.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider4.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative group">
+        <div x-data="{ scrollNext() { $refs.slider4.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider4.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative group -mx-4 sm:-mx-6 lg:-mx-12">
 
-            <button @click="scrollPrev" class="absolute -left-5 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+            <button @click="scrollPrev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
 
-            <div x-ref="slider4" class="flex overflow-x-auto space-x-20 pb-4 hide-scrollbar snap-x snap-mandatory">
+            <div x-ref="slider4" class="flex overflow-x-auto space-x-20 pb-16 pt-4 hide-scrollbar snap-x snap-mandatory px-4 sm:px-6 lg:px-12">
                 @foreach($top15Anime as $index => $anime)
-                    <div class="flex-none snap-start group/card relative flex items-stretch gap-1" style="width: auto; height: 390px;"
+                    <div class="flex-none snap-start group/card relative {{ $index === 0 ? 'ml-16' : '' }}" style="width: auto;"
                          x-data="{ isFavorite: {{ in_array($anime->mal_id, $favoriteAnimeIds) ? 'true' : 'false' }} }"
                          @toggle-favorite.window="if ($event.detail === {{ $anime->mal_id }}) isFavorite = !isFavorite">
 
-                        {{-- Numero posizione a sinistra --}}
-                        <div class="flex items-center justify-center flex-shrink-0" style="width: 120px;">
-                            <div class="font-black text-white/20 select-none" style="font-family: 'Arial Black', sans-serif; font-size: 400px; line-height: 1;">
-                                {{ $index + 1 }}
-                            </div>
-                        </div>
-
-                        {{-- Card della copertina --}}
-                        <a href="{{ route('anime.show', $anime->mal_id) }}" class="relative flex-shrink-0 w-[260px] rounded-lg overflow-hidden border-2 border-transparent hover:border-[#FF6600] transition cursor-pointer shadow-2xl hover:shadow-orange-500/50 duration-300 aspect-[2/3]" style="z-index: 10;">
-                            <img src="{{ $anime->image_url }}" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-
-                            {{-- Hover Overlay: Riquadro Arancione con Play --}}
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition flex items-center justify-center">
-                                <div class="bg-[#FF6600] rounded-full p-4">
-                                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                        {{-- Contenitore flex per numero e copertina --}}
+                        <div class="flex items-stretch gap-1" style="height: 390px;">
+                            {{-- Numero posizione a sinistra --}}
+                            <div class="flex items-center justify-center flex-shrink-0 {{ $index === 0 ? 'ml-16' : '' }}" style="width: 120px;">
+                                <div class="font-black text-white/20 select-none" style="font-family: 'Arial Black', sans-serif; font-size: 400px; line-height: 1;">
+                                    {{ $index + 1 }}
                                 </div>
                             </div>
 
-                            {{-- Testo titolo --}}
-                            <div class="absolute bottom-2 left-2 right-2 text-center">
-                                <h3 class="text-xs font-bold text-white line-clamp-2 drop-shadow">{{ $anime->title }}</h3>
-                            </div>
-                        </a>
+                            {{-- Card della copertina --}}
+                            <a href="{{ route('anime.show', $anime->mal_id) }}" class="relative flex-shrink-0 w-[260px] rounded-lg overflow-hidden border-2 border-transparent hover:border-[#FF6600] hover:scale-105 transition cursor-pointer shadow-2xl hover:shadow-orange-500/50 duration-300 aspect-[2/3]" style="z-index: 10;">
+                                <img src="{{ $anime->image_url }}" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+
+                                {{-- Hover Overlay: Riquadro Arancione con Play --}}
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition flex items-end justify-center pb-8">
+                                    <div class="bg-[#FF6600] hover:bg-[#FF8533] rounded px-6 py-3 flex items-center gap-2 cursor-pointer">
+                                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                                        <span class="text-white font-bold text-sm">Riproduci stagione 1 ep 1</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        {{-- Titolo sotto il riquadro --}}
+                        <h3 class="text-sm font-bold text-white line-clamp-2 drop-shadow mt-2 group-hover/card:opacity-75 transition w-[260px]" style="margin-left: 124px;">{{ $anime->title }}</h3>
 
                         {{-- Bottone Preferiti (AJAX POST) --}}
                         <button @click="toggleFavorite({{ $anime->mal_id }})"
@@ -228,7 +231,7 @@
                 @endforeach
             </div>
 
-            <button @click="scrollNext" class="absolute -right-5 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+            <button @click="scrollNext" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
 
             {{-- Overlay fade su entrambi i lati (solo estremita) --}}
             <div class="absolute left-0 top-0 bottom-0 w-32 pointer-events-none z-10" style="background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, transparent 100%);"></div>
@@ -276,45 +279,118 @@
     </div>
     @endif
 
-    {{-- 6. ELENCO ESPANDIBILE (SCOPRI DI PIÙ) --}}
-    <div class="w-full px-4 sm:px-6 lg:px-12 py-12">
-        <h2 class="text-xl font-bold mb-6 text-white">Scopri di più</h2>
+{{-- 5. SPOTLIGHT CAROUSEL (Singola riga con espansione in-place) --}}
+    @php
+        // Rendiamo i dati sicuri per JSON
+        $safeSpotlightData = $spotlightAnime->map(fn($a) => [
+            'mal_id' => $a->mal_id,
+            'title' => $a->title,
+            'image_url' => $a->image_url,
+            'score' => $a->score,
+            'synopsis' => $a->synopsis
+        ]);
+    @endphp
 
-        <div class="space-y-3">
-            @foreach($expandableList as $anime)
-            <div x-data="{ expanded: false }" class="bg-gray-900 rounded overflow-hidden border border-gray-800 hover:border-gray-600 transition">
-                <button @click="expanded = !expanded" class="w-full flex items-center justify-between p-4 hover:bg-gray-800 transition">
-                    <div class="flex items-center space-x-4 flex-1 text-left">
-                        <img src="{{ $anime->image_url }}" class="w-16 h-24 object-cover rounded flex-shrink-0">
-                        <div class="flex-1 min-w-0">
-                            <h3 class="font-bold text-white line-clamp-1">{{ $anime->title }}</h3>
-                            <p class="text-sm text-gray-400">Voto: <span class="text-[#FF6600]">{{ $anime->score ?? 'N/A' }}</span> ⭐</p>
+    <div class="w-full px-4 sm:px-6 lg:px-12 py-16 border-t border-gray-900 mt-10 mb-20 relative"
+         x-data="{
+            animes: {{ \Illuminate\Support\Js::from($safeSpotlightData) }},
+            activeIndex: 0,
+            nextSpotlight() {
+                this.activeIndex = (this.activeIndex + 1) % this.animes.length;
+                this.$nextTick(() => {
+                    const slider = this.$refs.spotlightSlider;
+                    const element = slider.children[this.activeIndex];
+                    if (element) {
+                        const offsetLeft = element.offsetLeft;
+                        const containerWidth = slider.clientWidth;
+                        slider.scrollTo({ left: offsetLeft - containerWidth / 2 + element.offsetWidth / 2, behavior: 'smooth' });
+                    }
+                });
+            },
+            prevSpotlight() {
+                this.activeIndex = (this.activeIndex - 1 + this.animes.length) % this.animes.length;
+                this.$nextTick(() => {
+                    const slider = this.$refs.spotlightSlider;
+                    const element = slider.children[this.activeIndex];
+                    if (element) {
+                        const offsetLeft = element.offsetLeft;
+                        const containerWidth = slider.clientWidth;
+                        slider.scrollTo({ left: offsetLeft - containerWidth / 2 + element.offsetWidth / 2, behavior: 'smooth' });
+                    }
+                });
+            }
+         }">
+
+        <h2 class="text-2xl font-bold mb-8 text-white tracking-wide">In Evidenza</h2>
+
+        <div class="relative group -mx-4 sm:-mx-6 lg:-mx-12 px-4 sm:px-6 lg:px-12">
+            
+            {{-- Freccia Sinistra (Centrata rispetto all'altezza delle immagini) --}}
+            <button @click="prevSpotlight()"
+                    class="absolute left-4 top-[120px] z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+
+            {{-- Contenitore Slider Singolo --}}
+            <div x-ref="spotlightSlider" class="flex overflow-x-auto space-x-4 pb-8 hide-scrollbar items-start snap-x snap-mandatory">
+                
+                <template x-for="(anime, index) in animes" :key="anime.mal_id">
+                    
+                    {{-- LA CARD MAGICA: La larghezza cambia dolcemente se è attiva o no --}}
+                    <div class="flex-none snap-start transition-all duration-500 ease-in-out cursor-pointer relative"
+                         :class="activeIndex === index ? 'w-[320px] md:w-[500px] lg:w-[650px]' : 'w-[140px] md:w-[180px] lg:w-[200px]'"
+                         
+                         {{-- Al click, diventa attiva e fa scroll per mettersi ben in vista --}}
+                         @click="activeIndex = index; setTimeout(() => $el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }), 100)">
+
+                        {{-- 1. IMMAGINE (Cambia proporzione da 2:3 a 16:9) --}}
+                        <div class="w-full overflow-hidden rounded-lg bg-gray-900 transition-all duration-500 ease-in-out relative border-2"
+                             :class="activeIndex === index ? 'aspect-[16/9] border-gray-600 shadow-2xl' : 'aspect-[2/3] border-transparent opacity-50 hover:opacity-100'">
+                            
+                            <img :src="anime.image_url" :alt="anime.title" class="w-full h-full object-cover object-top">
+                            
+                            {{-- Sfumatura nera in basso (visibile solo sull'attiva) --}}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent transition-opacity duration-500"
+                                 :class="activeIndex === index ? 'opacity-100' : 'opacity-0'"></div>
                         </div>
-                    </div>
-                    <svg class="w-5 h-5 text-gray-400 flex-shrink-0 ml-2 transition" :class="{ 'rotate-180': expanded }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                    </svg>
-                </button>
 
-                <div x-show="expanded" x-transition class="bg-gray-800/50 border-t border-gray-700 p-4 space-y-3">
-                    <p class="text-sm text-gray-300 line-clamp-3">{{ $anime->synopsis }}</p>
-                    <div class="flex items-center space-x-2">
-                        <a href="{{ route('anime.show', $anime->mal_id) }}" class="bg-[#FF6600] hover:bg-[#FF8533] text-white font-bold py-2 px-4 rounded text-sm transition flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
-                            Guarda
-                        </a>
-                        <button onclick="toggleFavorite({{ $anime->mal_id }}, 'anime')" class="border border-gray-600 hover:border-white text-gray-400 hover:text-white p-2 rounded transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
-                            </svg>
-                        </button>
+                        {{-- 2. DETTAGLI SOTTO L'IMMAGINE (Si srotolano solo se attiva) --}}
+                        <div class="transition-all duration-500 ease-in-out overflow-hidden"
+                             :class="activeIndex === index ? 'opacity-100 max-h-[400px] mt-4 pointer-events-auto' : 'opacity-0 max-h-0 mt-0 pointer-events-none'">
+                            
+                            <h3 class="text-xl md:text-2xl font-bold text-white mb-2 line-clamp-1" x-text="anime.title"></h3>
+                            
+                            <div class="flex items-center text-xs md:text-sm text-gray-400 mb-3 space-x-2">
+                                <span class="bg-gray-800 text-gray-300 px-1.5 py-0.5 rounded uppercase font-bold border border-gray-700">Sub</span>
+                                <span class="bg-gray-800 text-gray-300 px-1.5 py-0.5 rounded uppercase font-bold border border-gray-700">Dub</span>
+                                <span class="font-medium">• S1 E1</span>
+                                <span class="text-[#FF6600] font-bold ml-2">⭐ <span x-text="anime.score || 'N/A'" class="text-white"></span></span>
+                            </div>
+                            
+                            <p class="text-sm text-gray-400 line-clamp-3 mb-5 leading-relaxed" x-text="anime.synopsis"></p>
+                            
+                            <div class="flex space-x-3">
+                                <a :href="'/anime/' + anime.mal_id" class="bg-[#FF6600] hover:bg-[#FF8533] text-white font-bold py-2.5 px-6 rounded flex items-center transition shadow-lg text-sm md:text-base">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                                    Riproduci Ora
+                                </a>
+                                <button class="border border-gray-600 text-gray-400 hover:text-white p-2.5 rounded transition">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
-                </div>
+                </template>
             </div>
-            @endforeach
+
+            {{-- Freccia Destra --}}
+            <button @click="nextSpotlight()"
+                    class="absolute right-4 top-[120px] z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
         </div>
     </div>
-
 <script>
 function toggleFavorite(animeId) {
     fetch(`/favorites/anime/${animeId}`, {

@@ -67,6 +67,8 @@ class HomeController extends Controller
             }
         }
 
+        $spotlightAnime = Anime::whereNotNull('synopsis')->inRandomOrder()->take(10)->get();
+
         // Favoriti dell'utente (per mostrare lo stato del bookmark)
         $favoriteAnimeIds = $user->favorites()
             ->where('favoritable_type', \App\Models\Anime::class)
@@ -81,7 +83,8 @@ class HomeController extends Controller
             'top15Anime',
             'expandableList',
             'promotionalAnime',
-            'favoriteAnimeIds'
+            'favoriteAnimeIds',
+            'spotlightAnime'
         ));
     }
 }

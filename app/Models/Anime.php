@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Anime extends Model
 {
@@ -16,5 +17,10 @@ class Anime extends Model
     public $incrementing = false;
 
     // 3. Autorizziamo lo script a riempire questi campi
-    protected $fillable = ['mal_id', 'title', 'image_url', 'synopsis', 'score', 'episodes'];
+    protected $fillable = ['mal_id', 'title', 'image_url', 'banner_url', 'logo_url', 'synopsis', 'score', 'episodes'];
+
+    public function viewers(): HasMany
+    {
+        return $this->hasMany(WatchHistory::class, 'anime_id', 'mal_id');
+    }
 }

@@ -20,11 +20,17 @@ class FavoriteController extends Controller
 
         if ($existingFavorite) {
             $existingFavorite->delete();
+            $isFavorite = false;
         } else {
             $user->favorites()->create([
                 'favoritable_id' => $mal_id,
                 'favoritable_type' => Anime::class
             ]);
+            $isFavorite = true;
+        }
+
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true, 'isFavorite' => $isFavorite]);
         }
 
         return back();

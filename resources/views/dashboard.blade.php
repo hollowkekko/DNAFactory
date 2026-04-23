@@ -52,7 +52,7 @@
 
                 {{-- Bottoni Hero --}}
                 <div class="flex items-center space-x-3">
-                    <a :href="`/anime/${heroes[currentHero].mal_id}`" class="bg-[#FF6600] hover:bg-[#FF8533] text-white font-bold py-3 px-6 rounded flex items-center transition">
+                    <a :href="`/anime/${heroes[currentHero].mal_id}?action=play`" class="bg-[#FF6600] hover:bg-[#FF8533] text-white font-bold py-3 px-6 rounded flex items-center transition">
                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
                         Inizia a Guardare
                     </a>
@@ -92,7 +92,7 @@
                          x-data="{ isFavorite: {{ in_array($anime->mal_id, $favoriteAnimeIds) ? 'true' : 'false' }} }"
                          @toggle-favorite.window="if ($event.detail === {{ $anime->mal_id }}) isFavorite = !isFavorite">
 
-                        <a href="{{ route('anime.show', $anime->mal_id) }}" class="block relative rounded overflow-hidden aspect-[2/3] border border-transparent hover:border-[#FF6600] hover:scale-105 transition cursor-pointer duration-300">
+                        <a href="{{ route('anime.show', $anime->mal_id) }}" class="block relative rounded-lg overflow-hidden aspect-[2/3] border-2 border-transparent hover:border-[#FF6600] hover:scale-105 transition cursor-pointer duration-300 shadow-2xl hover:shadow-orange-500/50">
                             <img src="{{ $anime->image_url }}" class="w-full h-full object-cover">
 
                             {{-- Overlay Sfumato inferiore --}}
@@ -120,8 +120,8 @@
 
                         {{-- Bottone Preferiti (AJAX POST) --}}
                         <button @click="toggleFavorite({{ $anime->mal_id }})"
-                                class="absolute top-0 right-0 z-10 p-1.5 rounded-bl shadow transition"
-                                :class="isFavorite ? 'bg-[#FF6600] text-white hover:bg-[#FF8533]' : 'bg-transparent text-gray-400 hover:text-white'">
+                                class="absolute top-0 right-0 z-10 p-1.5 rounded-bl shadow transition group-hover/card:opacity-100 group-hover/card:scale-105 origin-top-right"
+                                :class="isFavorite ? 'bg-[#FF6600] text-white hover:bg-[#FF8533]' : 'bg-black/60 text-gray-400 hover:bg-black/80 hover:text-white group-hover/card:bg-black/80 group-hover/card:text-white'">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>
                         </button>
                     </div>
@@ -188,7 +188,7 @@
 
             <button @click="scrollPrev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
 
-            <div x-ref="slider4" class="flex overflow-x-auto space-x-20 pb-16 pt-4 hide-scrollbar snap-x snap-mandatory px-4 sm:px-6 lg:px-12">
+            <div x-ref="slider4" class="flex overflow-x-auto overflow-y-visible space-x-20 pb-16 pt-4 hide-scrollbar snap-x snap-mandatory px-4 sm:px-6 lg:px-12">
                 @foreach($top15Anime as $index => $anime)
                     <div class="flex-none snap-start group/card relative {{ $index === 0 ? 'ml-16' : '' }}" style="width: auto;"
                          x-data="{ isFavorite: {{ in_array($anime->mal_id, $favoriteAnimeIds) ? 'true' : 'false' }} }"
@@ -198,7 +198,7 @@
                         <div class="flex items-stretch gap-1" style="height: 390px;">
                             {{-- Numero posizione a sinistra --}}
                             <div class="flex items-center justify-center flex-shrink-0 {{ $index === 0 ? 'ml-16' : '' }}" style="width: 120px;">
-                                <div class="font-black text-white/20 select-none" style="font-family: 'Arial Black', sans-serif; font-size: 400px; line-height: 1;">
+                                <div class="font-black text-white/20 group-hover/card:text-white/30 select-none transition-colors duration-500" style="font-family: 'Arial Black', sans-serif; font-size: 400px; line-height: 1;">
                                     {{ $index + 1 }}
                                 </div>
                             </div>
@@ -223,8 +223,8 @@
 
                         {{-- Bottone Preferiti (AJAX POST) --}}
                         <button @click="toggleFavorite({{ $anime->mal_id }})"
-                                class="absolute top-3 right-3 z-20 p-1.5 rounded-bl shadow transition"
-                                :class="isFavorite ? 'bg-[#FF6600] text-white hover:bg-[#FF8533]' : 'bg-black/60 text-gray-400 hover:text-white'">
+                                class="absolute top-0 right-0 z-10 p-1.5 rounded-bl shadow transition group-hover/card:opacity-100 group-hover/card:scale-105 origin-top-right"
+                                :class="isFavorite ? 'bg-[#FF6600] text-white hover:bg-[#FF8533]' : 'bg-black/60 text-gray-400 hover:bg-black/80 hover:text-white group-hover/card:bg-black/80 group-hover/card:text-white'">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>
                         </button>
                     </div>
@@ -241,8 +241,8 @@
 
     {{-- 5. SEZIONE PROMOZIONALE (BANNER ORIZZONTALE) --}}
     @if($promotionalAnime)
-    <div class="w-full px-4 sm:px-6 lg:px-12 py-12">
-        <div class="relative rounded-lg overflow-hidden h-64 md:h-72 group/promo"
+    <div class="w-full px-4 sm:px-6 lg:px-12 py-12 flex justify-center">
+        <div class="relative rounded-lg overflow-hidden h-96 md:h-[28rem] lg:h-[32rem] max-w-[90rem] w-full group/promo"
              x-data="{ isFavorite: {{ in_array($promotionalAnime->mal_id, $favoriteAnimeIds) ? 'true' : 'false' }} }"
              @toggle-favorite.window="if ($event.detail === {{ $promotionalAnime->mal_id }}) isFavorite = !isFavorite">
 
@@ -291,7 +291,7 @@
         ]);
     @endphp
 
-    <div class="w-full px-4 sm:px-6 lg:px-12 py-16 border-t border-gray-900 mt-10 mb-20 relative"
+    <div class="w-full px-4 sm:px-6 lg:px-12 py-16 mb-20 relative"
          x-data="{
             animes: {{ \Illuminate\Support\Js::from($safeSpotlightData) }},
             activeIndex: 0,
@@ -301,9 +301,7 @@
                     const slider = this.$refs.spotlightSlider;
                     const element = slider.children[this.activeIndex];
                     if (element) {
-                        const offsetLeft = element.offsetLeft;
-                        const containerWidth = slider.clientWidth;
-                        slider.scrollTo({ left: offsetLeft - containerWidth / 2 + element.offsetWidth / 2, behavior: 'smooth' });
+                        slider.scrollTo({ left: element.offsetLeft - 50, behavior: 'smooth' });
                     }
                 });
             },
@@ -313,17 +311,15 @@
                     const slider = this.$refs.spotlightSlider;
                     const element = slider.children[this.activeIndex];
                     if (element) {
-                        const offsetLeft = element.offsetLeft;
-                        const containerWidth = slider.clientWidth;
-                        slider.scrollTo({ left: offsetLeft - containerWidth / 2 + element.offsetWidth / 2, behavior: 'smooth' });
+                        slider.scrollTo({ left: element.offsetLeft - 50, behavior: 'smooth' });
                     }
                 });
             }
          }">
 
-        <h2 class="text-2xl font-bold mb-8 text-white tracking-wide">In Evidenza</h2>
+        
 
-        <div class="relative group -mx-4 sm:-mx-6 lg:-mx-12 px-4 sm:px-6 lg:px-12">
+        <div class="relative group -mx-4 sm:-mx-6 lg:-mx-12 px-4 sm:px-6 lg:px-12 pt-8">
             
             {{-- Freccia Sinistra (Centrata rispetto all'altezza delle immagini) --}}
             <button @click="prevSpotlight()"
@@ -332,20 +328,22 @@
             </button>
 
             {{-- Contenitore Slider Singolo --}}
-            <div x-ref="spotlightSlider" class="flex overflow-x-auto space-x-4 pb-8 hide-scrollbar items-start snap-x snap-mandatory">
-                
+            <div x-ref="spotlightSlider" class="flex overflow-x-auto space-x-4 pb-12 hide-scrollbar items-start snap-x snap-mandatory overflow-y-visible">
+
+                <div style="width: 16px; flex-shrink: 0;"></div>
+
                 <template x-for="(anime, index) in animes" :key="anime.mal_id">
                     
                     {{-- LA CARD MAGICA: La larghezza cambia dolcemente se è attiva o no --}}
-                    <div class="flex-none snap-start transition-all duration-500 ease-in-out cursor-pointer relative"
-                         :class="activeIndex === index ? 'w-[320px] md:w-[500px] lg:w-[650px]' : 'w-[140px] md:w-[180px] lg:w-[200px]'"
+                    <div class="flex-none snap-start transition-all duration-500 ease-in-out cursor-pointer relative hover:z-50"
+                         :class="activeIndex === index ? 'w-[320px] md:w-[500px] lg:w-[650px] z-40' : 'w-[140px] md:w-[180px] lg:w-[200px]'"
                          
                          {{-- Al click, diventa attiva e fa scroll per mettersi ben in vista --}}
                          @click="activeIndex = index; setTimeout(() => $el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }), 100)">
 
                         {{-- 1. IMMAGINE (Cambia proporzione da 2:3 a 16:9) --}}
-                        <div class="w-full overflow-hidden rounded-lg bg-gray-900 transition-all duration-500 ease-in-out relative border-2"
-                             :class="activeIndex === index ? 'aspect-[16/9] border-gray-600 shadow-2xl' : 'aspect-[2/3] border-transparent opacity-50 hover:opacity-100'">
+                        <div class="w-full overflow-hidden rounded-lg bg-gray-900 transition-all duration-500 ease-in-out relative border-2 hover:border-[#FF6600] hover:scale-105 hover:shadow-orange-500/50 hover:z-20 origin-top"
+                             :class="activeIndex === index ? 'aspect-[16/9] border-gray-600 shadow-2xl z-10' : 'aspect-[2/3] border-transparent opacity-50 hover:opacity-100'">
                             
                             <img :src="anime.image_url" :alt="anime.title" class="w-full h-full object-cover object-top">
                             

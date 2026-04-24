@@ -14,8 +14,9 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $aniListService = new AniListService();
-        
 
+
+        // ========== ANIME ==========
         // HERO: Peschiamo 5 anime casuali per il carosello hero
         $heroAnimes = Anime::whereNotNull('synopsis')->inRandomOrder()->take(5)->get();
 
@@ -80,6 +81,68 @@ class HomeController extends Controller
             ->pluck('favoritable_id')
             ->toArray();
 
+        // ========== MANGA ==========
+        // HERO: Peschiamo 5 manga casuali per il carosello hero
+        $heroMangas = Manga::whereNotNull('synopsis')->inRandomOrder()->take(5)->get();
+
+        // Assicuriamo che abbiano banner_url e logo_url
+        $heroMangas = $heroMangas->map(function($manga) use ($aniListService) {
+            if (!$manga->banner_url) {
+                $aniListData = $aniListService->getMangaByMalId($manga->mal_id);
+                if ($aniListData && isset($aniListData['bannerImage'])) {
+                    $manga->banner_url = $aniListData['bannerImage'];
+                }
+            }
+
+            if ($manga->isDirty()) {
+                $manga->save();
+            }
+
+            return $manga;
+        });
+
+        $heroManga = $heroMangas->first(); // Fallback per il primo
+
+        // CAROSELLO 1: 15 Manga casuali (I nostri consigli per te)
+        $recommendedManga = Manga::inRandomOrder()->take(15)->get();
+
+        // CAROSELLO 2: Continua a leggere - Manga che l'utente sta leggendo
+        $continueReading = $user->readHistory()
+            ->with('manga')
+            ->orderByDesc('read_date')
+            ->take(15)
+            ->get()
+            ->map(fn($h) => $h->manga)
+            ->filter();  // Remove null entries
+
+        // CAROSELLO 3: I 15 Manga più votati
+        $top15Manga = Manga::orderByDesc('score')->take(15)->get();
+
+        // Sezione promozionale - 3 manga casuali
+        $promotionalMangas = Manga::whereNotNull('synopsis')->inRandomOrder()->take(3)->get();
+        $promotionalManga = $promotionalMangas->get(0);
+        $promotionalManga2 = $promotionalMangas->get(1);
+        $promotionalManga3 = $promotionalMangas->get(2);
+
+        // Popola banner_url dai promotional manga se mancanti
+        foreach ([$promotionalManga, $promotionalManga2, $promotionalManga3] as $manga) {
+            if ($manga && !$manga->banner_url) {
+                $aniListData = $aniListService->getMangaByMalId($manga->mal_id);
+                if ($aniListData && isset($aniListData['bannerImage'])) {
+                    $manga->banner_url = $aniListData['bannerImage'];
+                    $manga->save();
+                }
+            }
+        }
+
+        $spotlightManga = Manga::whereNotNull('synopsis')->inRandomOrder()->take(10)->get();
+
+        // Favoriti manga dell'utente
+        $favoriteMangaIds = $user->favorites()
+            ->where('favoritable_type', \App\Models\Manga::class)
+            ->pluck('favoritable_id')
+            ->toArray();
+
         return view('dashboard', compact(
             'heroAnime',
             'heroAnimes',
@@ -91,7 +154,17 @@ class HomeController extends Controller
             'promotionalAnime2',
             'promotionalAnime3',
             'favoriteAnimeIds',
-            'spotlightAnime'
+            'spotlightAnime',
+            'heroManga',
+            'heroMangas',
+            'recommendedManga',
+            'continueReading',
+            'top15Manga',
+            'promotionalManga',
+            'promotionalManga2',
+            'promotionalManga3',
+            'favoriteMangaIds',
+            'spotlightManga'
         ));
     }
 }

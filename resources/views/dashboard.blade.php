@@ -194,7 +194,75 @@
             <button @click="scrollNext" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
         </div>
     </div>
-    
+
+{{-- 2B. CAROSELLO MANGA (I NOSTRI CONSIGLI PER MANGA) --}}
+    <div class="w-full py-8 relative z-20 overflow-hidden">
+        <h2 class="text-xl font-bold mb-4 text-white px-4 sm:px-6 lg:px-12">I nostri consigli manga per te</h2>
+
+        <div x-data="{ scrollNext() { $refs.slider1manga.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider1manga.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative group">
+
+            <button @click="scrollPrev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+
+            <div x-ref="slider1manga" class="flex overflow-x-auto space-x-3 pb-4 hide-scrollbar snap-x snap-mandatory overflow-y-visible pt-8 relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
+
+                @foreach($recommendedManga as $index => $manga)
+                    <div class="flex-none w-[260px] snap-start group/card relative z-20 scroll-ml-4 sm:scroll-ml-6 lg:scroll-ml-12"
+                         x-data="{ isFavorite: {{ in_array($manga->mal_id, $favoriteMangaIds) ? 'true' : 'false' }} }"
+                         @toggle-favorite-manga.window="if ($event.detail === {{ $manga->mal_id }}) isFavorite = !isFavorite">
+
+                        <a href="{{ route('manga.show', $manga->mal_id) }}?action=read" class="block relative rounded-lg overflow-hidden aspect-[2/3] border-2 border-transparent hover:border-[#FF6600] hover:scale-105 transition cursor-pointer duration-300 shadow-2xl hover:shadow-orange-500/50">
+                            <img src="{{ $manga->image_url }}" class="w-full h-full object-cover">
+
+                             {{-- Overlay Sfumato inferiore --}}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+
+                            {{-- Hover Overlay: Riquadro Arancione con Play --}}
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition flex items-end justify-center pb-8">
+                                <div class="bg-[#FF6600] hover:bg-[#FF8533] rounded px-6 py-3 flex items-center gap-2 cursor-pointer">
+                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                                    <span class="text-white font-bold text-sm">Inizia lettura</span>
+                                </div>
+                            </div>
+
+                            {{-- Badge in alto a sinistra --}}
+                            @if($index % 3 == 0)
+                                <div class="absolute top-0 left-0 bg-purple-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br">Nuovo capitolo</div>
+                            @elseif($index % 4 == 0)
+                                <div class="absolute top-0 left-0 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br">Concluso</div>
+                            @endif
+                        </a>
+
+                        {{-- Titolo e dettagli --}}
+                        <div class="flex items-center justify-between mt-3 mb-1 px-1">
+                            <div class="flex items-center space-x-2 text-[10px] text-gray-400 font-medium">
+                                <span>Cap. 1</span>
+                            </div>
+                            <div class="flex items-center text-[11px] font-bold text-gray-300">
+                                <svg class="w-3 h-3 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                {{ $manga->score ?? 'N/A' }}
+                            </div>
+                        </div>
+
+                        {{-- Titolo --}}
+                        <h3 class="text-sm font-bold text-white line-clamp-1 drop-shadow group-hover/card:text-[#FF6600] transition px-1" title="{{ $manga->title }}">{{ $manga->title }}</h3>
+
+                        {{-- Bottone Preferiti --}}
+                        <button @click="toggleFavoriteManga({{ $manga->mal_id }})"
+                                class="absolute top-0 right-0 z-10 p-1.5 rounded-bl shadow transition group-hover/card:opacity-100 group-hover/card:scale-105 origin-top-right"
+                                :class="isFavorite ? 'bg-[#FF6600] text-white hover:bg-[#FF8533]' : 'bg-black/60 text-gray-400 hover:bg-black/80 hover:text-white group-hover/card:bg-black/80 group-hover/card:text-white'">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>
+                        </button>
+                    </div>
+                @endforeach
+
+                <div class="fixed left-0 top-0 bottom-0 w-8 md:w-16 pointer-events-none z-10 bg-gradient-to-r from-black to-transparent opacity-80"></div>
+                <div class="fixed right-0 top-0 bottom-0 w-8 md:w-16 pointer-events-none z-10 bg-gradient-to-l from-black to-transparent opacity-80"></div>
+            </div>
+
+            <button @click="scrollNext" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+        </div>
+    </div>
+
  {{-- 3. CAROSELLO 2 (CONTINUA A GUARDARE) --}}
     @if($continueWatching->isNotEmpty())
     <div class="w-full py-8 relative z-20 overflow-hidden group">
@@ -260,6 +328,77 @@
                             </h3>
                         </div>
                         
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Freccia Destra --}}
+            <button @click="scrollNext" class="absolute right-4 top-[35%] -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+        </div>
+    </div>
+    @endif
+
+    {{-- 3B. CAROSELLO 2B (CONTINUA A LEGGERE) --}}
+    @if($continueReading->isNotEmpty())
+    <div class="w-full py-8 relative z-20 overflow-hidden group">
+
+        {{-- Intestazione con Titolo e Link Cronologia --}}
+        <div class="flex justify-between items-end mb-4 px-4 sm:px-6 lg:px-12">
+            <h2 class="text-xl font-bold text-white">Continua a leggere</h2>
+            <a href="{{ route('read-history.index') }}" class="text-sm font-medium text-gray-400 hover:text-white transition flex items-center group">
+                Visualizza la cronologia
+                <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+        </div>
+
+        <div x-data="{ scrollNext() { $refs.slider2manga.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider2manga.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative">
+
+            {{-- Freccia Sinistra --}}
+            <button @click="scrollPrev" class="absolute left-4 top-[35%] -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+
+            {{-- Contenitore Slider --}}
+            <div x-ref="slider2manga" class="flex overflow-x-auto space-x-4 pb-8 pt-4 -mt-2 hide-scrollbar snap-x snap-mandatory overflow-y-visible relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
+
+                @foreach($continueReading as $manga)
+                    {{-- Card Orizzontale --}}
+                    <div class="flex-none w-[280px] md:w-[320px] snap-start group/card relative scroll-ml-4 sm:scroll-ml-6 lg:scroll-ml-12 cursor-pointer hover:z-30">
+
+                        {{-- CORNICE IMMAGINE --}}
+                        <a href="{{ route('manga.show', $manga->mal_id) }}?action=read" class="block relative rounded-md overflow-hidden aspect-video border-2 border-transparent group-hover/card:border-[#FF6600] group-hover/card:shadow-orange-500/50 group-hover/card:scale-105 transform origin-center transition-all duration-300 shadow-lg bg-gray-900">
+
+                            <img src="{{ $manga->image_url }}" class="w-full h-full object-cover object-top">
+
+                            {{-- Overlay Scuro --}}
+                            <div class="absolute inset-0 bg-black/20 group-hover/card:bg-black/50 transition-colors duration-300"></div>
+
+                            {{-- Badge Tempo Rimanente --}}
+                            <div class="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-gray-200 text-[10px] font-bold px-2 py-0.5 rounded border border-white/10">
+                                Capitolo successivo
+                            </div>
+
+                            {{-- Tasto Play Centrale --}}
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="bg-black/60 backdrop-blur-md text-white rounded-full p-3 group-hover/card:bg-[#FF6600] group-hover/card:scale-110 transition-all duration-300 shadow-xl border border-white/20 group-hover/card:border-transparent">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                                </div>
+                            </div>
+
+                            {{-- Progress Bar --}}
+                            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gray-600/80">
+                                <div class="h-full bg-[#FF6600]" style="width: 60%;"></div>
+                            </div>
+                        </a>
+
+                        {{-- TESTI SOTTO L'IMMAGINE --}}
+                        <div class="mt-4 px-1">
+                            <div class="flex items-center space-x-2 text-[11px] text-gray-400 font-medium mb-1 line-clamp-1">
+                                <span class="truncate">{{ $manga->title }}</span>
+                            </div>
+
+                            <h3 class="text-sm font-bold text-white line-clamp-1 group-hover/card:text-[#FF6600] transition" title="{{ $manga->title }}">
+                                Cap. 1 - Primo capitolo
+                            </h3>
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -429,6 +568,78 @@
         </div>
     </div>
 
+    {{-- 4B. TOP 15 MANGA --}}
+    <div class="w-full px-4 sm:px-6 lg:px-12 py-8">
+        <h2 class="text-xl font-bold mb-4 text-white uppercase">TOP MANGA</h2>
+
+        <div x-data="{ scrollNext() { $refs.slider4manga.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider4manga.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative group -mx-4 sm:-mx-6 lg:-mx-12">
+
+            <button @click="scrollPrev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+
+            <div x-ref="slider4manga" class="flex overflow-x-auto overflow-y-visible space-x-20 pb-16 pt-4 hide-scrollbar snap-x snap-mandatory px-4 sm:px-6 lg:px-12">
+                @foreach($top15Manga as $index => $manga)
+                    <div class="flex-none snap-start group/card relative {{ $index === 0 ? 'ml-16' : '' }}" style="width: auto;"
+                         x-data="{ isFavorite: {{ in_array($manga->mal_id, $favoriteMangaIds) ? 'true' : 'false' }} }"
+                         @toggle-favorite-manga.window="if ($event.detail === {{ $manga->mal_id }}) isFavorite = !isFavorite">
+
+                        {{-- Contenitore flex per numero e copertina --}}
+                        <div class="flex items-stretch gap-1" style="height: 390px;">
+                            {{-- Numero posizione a sinistra --}}
+                            <div class="flex items-center justify-center flex-shrink-0 {{ $index === 0 ? 'ml-16' : '' }}" style="width: 120px;">
+                                <div class="font-black text-white/20 group-hover/card:text-white/30 select-none transition-colors duration-500" style="font-family: 'Arial Black', sans-serif; font-size: 400px; line-height: 1;">
+                                    {{ $index + 1 }}
+                                </div>
+                            </div>
+
+                            {{-- Card della copertina --}}
+                            <a href="{{ route('manga.show', $manga->mal_id) }}?action=read" class="relative flex-shrink-0 w-[260px] rounded-lg overflow-hidden border-2 border-transparent hover:border-[#FF6600] hover:scale-105 transition cursor-pointer shadow-2xl hover:shadow-orange-500/50 duration-300 aspect-[2/3]" style="z-index: 10;">
+                                <img src="{{ $manga->image_url }}" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+
+                                {{-- Hover Overlay --}}
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition flex items-end justify-center pb-8">
+                                    <div class="bg-[#FF6600] hover:bg-[#FF8533] rounded px-6 py-3 flex items-center gap-2 cursor-pointer">
+                                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                                        <span class="text-white font-bold text-sm">Inizia lettura</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        {{-- Titolo sotto il riquadro --}}
+                        <div class="w-[260px]" style="margin-left: {{ $index === 0 ? '188px' : '124px' }};">
+                            <div class="flex items-center justify-between mt-3 mb-1 px-1">
+                                <div class="flex items-center space-x-2 text-[10px] text-gray-400 font-medium">
+                                    <span>Cap. 1</span>
+                                </div>
+                                <div class="flex items-center text-[11px] font-bold text-gray-300">
+                                    <svg class="w-3 h-3 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    {{ $manga->score ?? 'N/A' }}
+                                </div>
+                            </div>
+
+                            {{-- Titolo --}}
+                            <h3 class="text-sm font-bold text-white line-clamp-1 drop-shadow group-hover/card:text-[#FF6600] transition px-1" title="{{ $manga->title }}">{{ $manga->title }}</h3>
+                        </div>
+
+                        {{-- Bottone Preferiti --}}
+                        <button @click="toggleFavoriteManga({{ $manga->mal_id }})"
+                                class="absolute top-0 right-0 z-10 p-1.5 rounded-bl shadow transition group-hover/card:opacity-100 group-hover/card:scale-105 origin-top-right"
+                                :class="isFavorite ? 'bg-[#FF6600] text-white hover:bg-[#FF8533]' : 'bg-black/60 text-gray-400 hover:bg-black/80 hover:text-white group-hover/card:bg-black/80 group-hover/card:text-white'">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>
+                        </button>
+                    </div>
+                @endforeach
+            </div>
+
+            <button @click="scrollNext" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+
+            {{-- Overlay fade --}}
+            <div class="absolute left-0 top-0 bottom-0 w-32 pointer-events-none z-10" style="background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, transparent 100%);"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-32 pointer-events-none z-10" style="background: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 100%);"></div>
+        </div>
+    </div>
+
     {{-- 5. SEZIONE PROMOZIONALE (BANNER ORIZZONTALE) --}}
     @if($promotionalAnime)
     <div class="w-full px-4 sm:px-6 lg:px-12 py-12 flex justify-center">
@@ -469,7 +680,47 @@
     </div>
     @endif
 
-{{-- 5. SPOTLIGHT CAROUSEL (Singola riga con espansione in-place) --}}
+{{-- 5B. SEZIONE PROMOZIONALE MANGA (BANNER ORIZZONTALE) --}}
+    @if($promotionalManga)
+    <div class="w-full px-4 sm:px-6 lg:px-12 py-12 flex justify-center">
+        <div class="relative rounded-lg overflow-hidden h-96 md:h-[28rem] lg:h-[32rem] max-w-[90rem] w-full group/promo"
+             x-data="{ isFavorite: {{ in_array($promotionalManga->mal_id, $favoriteMangaIds) ? 'true' : 'false' }} }"
+             @toggle-favorite-manga.window="if ($event.detail === {{ $promotionalManga->mal_id }}) isFavorite = !isFavorite">
+
+            {{-- Background Image --}}
+            <img src="{{ $promotionalManga->banner_url ?? $promotionalManga->image_url }}" class="absolute inset-0 w-full h-full object-cover object-center">
+
+            {{-- Gradient Overlay --}}
+            <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
+
+            {{-- Content --}}
+            <div class="absolute inset-0 flex items-center">
+                <div class="ml-0 md:ml-8 max-w-md">
+                    <h2 class="text-3xl md:text-4xl font-black text-white mb-3 drop-shadow-lg">
+                        {{ $promotionalManga->title }}
+                    </h2>
+                    <p class="text-gray-300 text-sm md:text-base mb-6 line-clamp-2">
+                        {{ $promotionalManga->synopsis }}
+                    </p>
+                    <div class="flex items-center space-x-3">
+                        <a href="{{ route('manga.show', $promotionalManga->mal_id) }}?action=read"
+                           class="bg-[#FF6600] hover:bg-[#FF8533] text-white font-bold py-3 px-8 rounded flex items-center transition shadow-lg">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                            Leggi ora
+                        </a>
+                        <button @click="toggleFavoriteManga({{ $promotionalManga->mal_id }})"
+                                class="p-3 rounded transition"
+                                :class="isFavorite ? 'bg-[#FF6600] text-white hover:bg-[#FF8533]' : 'bg-black/60 text-gray-400 hover:text-white border border-gray-600'">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+{{-- 6. SPOTLIGHT CAROUSEL MANGA --}}
     @php
         // Rendiamo i dati sicuri per JSON
         $safeSpotlightData = $spotlightAnime->map(fn($a) => [
@@ -576,6 +827,110 @@
             </button>
         </div>
     </div>
+
+{{-- 7. SPOTLIGHT CAROUSEL MANGA --}}
+    @php
+        // Rendiamo i dati sicuri per JSON
+        $safeSpotlightMangaData = $spotlightManga->map(fn($m) => [
+            'mal_id' => $m->mal_id,
+            'title' => $m->title,
+            'image_url' => $m->image_url,
+            'score' => $m->score,
+            'synopsis' => $m->synopsis
+        ]);
+    @endphp
+
+    <div class="w-full px-4 sm:px-6 lg:px-12 py-16 mb-20 relative"
+         x-data="{
+            mangas: {{ \Illuminate\Support\Js::from($safeSpotlightMangaData) }},
+            activeIndex: 0,
+            nextSpotlight() {
+                this.activeIndex = (this.activeIndex + 1) % this.mangas.length;
+                this.$nextTick(() => {
+                    const slider = this.$refs.spotlightMangaSlider;
+                    const element = slider.children[this.activeIndex];
+                    if (element) {
+                        slider.scrollTo({ left: element.offsetLeft - 50, behavior: 'smooth' });
+                    }
+                });
+            },
+            prevSpotlight() {
+                this.activeIndex = (this.activeIndex - 1 + this.mangas.length) % this.mangas.length;
+                this.$nextTick(() => {
+                    const slider = this.$refs.spotlightMangaSlider;
+                    const element = slider.children[this.activeIndex];
+                    if (element) {
+                        slider.scrollTo({ left: element.offsetLeft - 50, behavior: 'smooth' });
+                    }
+                });
+            }
+         }">
+
+        <div class="relative group -mx-4 sm:-mx-6 lg:-mx-12 px-4 sm:px-6 lg:px-12 pt-8">
+
+            {{-- Freccia Sinistra --}}
+            <button @click="prevSpotlight()"
+                    class="absolute left-4 top-[120px] z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+
+            {{-- Contenitore Slider --}}
+            <div x-ref="spotlightMangaSlider" class="flex overflow-x-auto space-x-4 pb-12 pt-4 -mt-4 hide-scrollbar items-start snap-x snap-mandatory overflow-y-visible">
+                <div style="width: 16px; flex-shrink: 0;"></div>
+
+                <template x-for="(manga, index) in mangas" :key="manga.mal_id">
+
+                    {{-- GRUPPO NOMINATO --}}
+                    <div class="flex-none snap-start transition-all duration-500 ease-in-out cursor-pointer relative group/spot"
+                         :class="activeIndex === index ? 'w-[320px] md:w-[500px] lg:w-[650px] z-40' : 'w-[140px] md:w-[180px] lg:w-[200px] hover:z-30'"
+                         @click="activeIndex = index; setTimeout(() => $el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }), 100)">
+
+                        {{-- CORNICE VISIVA --}}
+                        <div class="w-full overflow-hidden rounded-lg bg-gray-900 transition-all duration-300 ease-out relative border-2 transform origin-left group-hover/spot:scale-[1.02] group-hover/spot:border-[#FF6600] group-hover/spot:shadow-orange-500/50"
+                             :class="activeIndex === index ? 'aspect-[16/9] border-gray-600 shadow-2xl' : 'aspect-[2/3] border-transparent opacity-60 group-hover/spot:opacity-100'">
+
+                            <img :src="manga.image_url" :alt="manga.title" class="w-full h-full object-cover object-top">
+
+                            {{-- Sfumatura nera in basso --}}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent transition-opacity duration-500 pointer-events-none"
+                                 :class="activeIndex === index ? 'opacity-100' : 'opacity-0'"></div>
+                        </div>
+
+                        {{-- DETTAGLI SOTTO L'IMMAGINE --}}
+                        <div class="transition-all duration-500 ease-in-out overflow-hidden"
+                             :class="activeIndex === index ? 'opacity-100 max-h-[400px] mt-4 pointer-events-auto' : 'opacity-0 max-h-0 mt-0 pointer-events-none'">
+
+                            <h3 class="text-xl md:text-2xl font-bold text-white mb-2 line-clamp-1" x-text="manga.title"></h3>
+
+                            <div class="flex items-center text-xs md:text-sm text-gray-400 mb-3 space-x-2">
+                                <span class="font-medium">• Cap. 1</span>
+                                <span class="text-[#FF6600] font-bold ml-2">⭐ <span x-text="manga.score || 'N/A'" class="text-white"></span></span>
+                            </div>
+
+                            <p class="text-sm text-gray-400 line-clamp-3 mb-5 leading-relaxed" x-text="manga.synopsis"></p>
+
+                            <div class="flex space-x-3">
+                                <a :href="'/manga/' + manga.mal_id + '?action=read'" class="bg-[#FF6600] hover:bg-[#FF8533] text-white font-bold py-2.5 px-6 rounded flex items-center transition shadow-lg text-sm md:text-base">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
+                                    Leggi Ora
+                                </a>
+                                <button class="border border-gray-600 text-gray-400 hover:text-white p-2.5 rounded transition">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </template>
+            </div>
+
+            {{-- Freccia Destra --}}
+            <button @click="nextSpotlight()"
+                    class="absolute right-4 top-[120px] z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
 <script>
 function toggleFavorite(animeId) {
     fetch(`/favorites/anime/${animeId}`, {
@@ -590,6 +945,22 @@ function toggleFavorite(animeId) {
     .finally(() => {
         // Dispatch event to update Alpine.js state
         window.dispatchEvent(new CustomEvent('toggle-favorite', { detail: animeId }));
+    });
+}
+
+function toggleFavoriteManga(mangaId) {
+    fetch(`/favorites/manga/${mangaId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .catch(error => console.error('Error:', error))
+    .finally(() => {
+        // Dispatch event to update Alpine.js state
+        window.dispatchEvent(new CustomEvent('toggle-favorite-manga', { detail: mangaId }));
     });
 }
 </script>

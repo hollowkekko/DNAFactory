@@ -36,4 +36,33 @@ class AniListService
 
         return null;
     }
+
+    public function getMangaByMalId($malId)
+    {
+        $query = <<<'GRAPHQL'
+        query ($malId: Int) {
+            Media(idMal: $malId, type: MANGA) {
+                id
+                title {
+                    romaji
+                }
+                coverImage {
+                    large
+                }
+                bannerImage
+            }
+        }
+        GRAPHQL;
+
+        $response = Http::post($this->endpoint, [
+            'query' => $query,
+            'variables' => ['malId' => $malId]
+        ]);
+
+        if ($response->successful()) {
+            return $response->json()['data']['Media'] ?? null;
+        }
+
+        return null;
+    }
 }

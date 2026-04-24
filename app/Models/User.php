@@ -53,4 +53,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(WatchHistory::class);
     }
+
+    public function readHistory(): HasMany
+    {
+        return $this->hasMany(ReadHistory::class);
+    }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MangaController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\WatchHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
     Route::post('/favorites/anime/{mal_id}', [FavoriteController::class, 'toggleAnime'])->name('favorites.toggleAnime');
     Route::post('/favorites/manga/{mal_id}', [FavoriteController::class, 'toggleManga'])->name('favorites.toggleManga');
+    Route::get('/watch-history', [WatchHistoryController::class, 'index'])->name('watch-history.index');
 });
 
 Route::get('/anime', [AnimeController::class, 'index'])->name('anime.index');

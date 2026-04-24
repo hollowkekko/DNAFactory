@@ -55,15 +55,20 @@ class HomeController extends Controller
         // Elenco espandibile
         $expandableList = Anime::inRandomOrder()->take(20)->get();
 
-        // Sezione promozionale (banner orizzontale) - anime casuale
-        $promotionalAnime = Anime::whereNotNull('synopsis')->inRandomOrder()->first();
+        // Sezione promozionale (banner orizzontale) - 3 anime casuali (1 grande + 2 laterali)
+        $promotionalAnimes = Anime::whereNotNull('synopsis')->inRandomOrder()->take(3)->get();
+        $promotionalAnime = $promotionalAnimes->get(0);
+        $promotionalAnime2 = $promotionalAnimes->get(1);
+        $promotionalAnime3 = $promotionalAnimes->get(2);
 
-        // Popola banner_url dal promotional anime se mancante
-        if ($promotionalAnime && !$promotionalAnime->banner_url) {
-            $aniListData = $aniListService->getAnimeByMalId($promotionalAnime->mal_id);
-            if ($aniListData && isset($aniListData['bannerImage'])) {
-                $promotionalAnime->banner_url = $aniListData['bannerImage'];
-                $promotionalAnime->save();
+        // Popola banner_url dai promotional anime se mancanti
+        foreach ([$promotionalAnime, $promotionalAnime2, $promotionalAnime3] as $anime) {
+            if ($anime && !$anime->banner_url) {
+                $aniListData = $aniListService->getAnimeByMalId($anime->mal_id);
+                if ($aniListData && isset($aniListData['bannerImage'])) {
+                    $anime->banner_url = $aniListData['bannerImage'];
+                    $anime->save();
+                }
             }
         }
 
@@ -83,6 +88,8 @@ class HomeController extends Controller
             'top15Anime',
             'expandableList',
             'promotionalAnime',
+            'promotionalAnime2',
+            'promotionalAnime3',
             'favoriteAnimeIds',
             'spotlightAnime'
         ));

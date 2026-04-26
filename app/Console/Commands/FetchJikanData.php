@@ -44,6 +44,9 @@ class FetchJikanData extends Command
                 $items = $response->json()['data'] ?? [];
 
                 foreach ($items as $item) {
+                    // Estrai i nomi dei generi
+                    $genres = array_map(fn($g) => $g['name'], $item['genres'] ?? []);
+
                     $modelClass::updateOrCreate(
                         ['mal_id' => $item['mal_id']],
                         [
@@ -52,6 +55,7 @@ class FetchJikanData extends Command
                             'synopsis' => $item['synopsis'] ?? 'Nessuna trama disponibile',
                             'score' => $item['score'] ?? null,
                             'episodes' => $item['episodes'] ?? null,
+                            'genres' => $genres,
                         ]
                     );
                     $totalImported++;

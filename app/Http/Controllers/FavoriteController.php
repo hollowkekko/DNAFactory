@@ -62,4 +62,17 @@ class FavoriteController extends Controller
         $favorites = Auth::user()->favorites()->with('favoritable')->get();
         return view('favorites.index', compact('favorites'));
     }
+
+    public function destroy($id)
+    {
+        $user = Auth::user();
+        $favorite = $user->favorites()->findOrFail($id);
+        $favorite->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back();
+    }
 }

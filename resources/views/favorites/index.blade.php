@@ -31,15 +31,25 @@
                         $url = $isAnime ? route('anime.show', $item->mal_id) : route('manga.show', $item->mal_id);
                     @endphp
 
-                    <div class="relative group">
+                    <div class="relative group"
+                         x-data="{ isFavorite: true }"
+                         @toggle-favorite.window="if ($event.detail === '{{ $favorite->id }}') isFavorite = !isFavorite">
                         <a href="{{ $url }}" class="block relative rounded-lg overflow-hidden aspect-[2/3] border border-gray-800 hover:border-orange-500 transition-colors shadow-lg">
                             <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            
+
                             {{-- Etichetta tipo (Anime/Manga) --}}
                             <div class="absolute top-0 left-0 bg-black/80 text-gray-300 text-[10px] font-bold px-2 py-1 rounded-br-lg uppercase tracking-wider">
                                 {{ $isAnime ? 'Anime' : 'Manga' }}
                             </div>
                         </a>
+
+                        {{-- Bottone Rimuovi dai Preferiti --}}
+                        <button onclick="removeFavorite('{{ $favorite->id }}', this)"
+                                class="absolute top-2 right-2 z-10 p-2 rounded-full bg-black/60 text-red-500 hover:bg-red-600 hover:text-white opacity-0 group-hover:opacity-100 transition shadow-lg"
+                                title="Rimuovi dai preferiti">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+
                         <h3 class="mt-3 text-sm font-semibold text-gray-200 line-clamp-2">
                             {{ $item->title }}
                         </h3>
@@ -49,4 +59,47 @@
         @endif
 
     </div>
+
+    <script>
+    function removeFavorite(favoriteId, button) {
+        const card = button.closest('.relative.group');
+
+        // Rimuovi immediatamente con animazione
+        card.style.animation = 'fadeOut 0.3s ease-out';
+
+        fetch(`/favorites/${favoriteId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            // Se non ci sono più preferiti, ricarica la pagina
+            setTimeout(() => {
+                if (document.querySelectorAll('.relative.group').length === 0) {
+                    location.reload();
+                }
+            }, 300);
+        })
+        .catch(error => console.error('Errore:', error))
+        .finally(() => {
+            // Rimuovi sempre dal DOM dopo l'animazione
+            setTimeout(() => card.remove(), 300);
+        });
+    }
+    </script>
+
+    <style>
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+    }
+    </style>
 </x-app-layout>

@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
     Route::post('/favorites/anime/{mal_id}', [FavoriteController::class, 'toggleAnime'])->name('favorites.toggleAnime');
     Route::post('/favorites/manga/{mal_id}', [FavoriteController::class, 'toggleManga'])->name('favorites.toggleManga');
+    Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
     Route::get('/watch-history', [WatchHistoryController::class, 'index'])->name('watch-history.index');
     Route::get('/read-history', [ReadHistoryController::class, 'index'])->name('read-history.index');
 });
@@ -48,6 +49,19 @@ Route::get('/manga', [MangaController::class, 'index'])->name('manga.index');
 Route::get('/manga/{mal_id}', [MangaController::class, 'show'])->name('manga.show');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+
+// Pagine statiche
+Route::get('/about', function () {
+    return view('pages.about');
+})->name('about');
+
+Route::get('/privacy', function () {
+    return view('pages.privacy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return view('pages.terms');
+})->name('terms');
 
 
 require __DIR__.'/auth.php';

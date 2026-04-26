@@ -12,7 +12,7 @@ class Manga extends Model
 
     protected $primaryKey = 'mal_id';
     public $incrementing = false;
-    protected $fillable = ['mal_id', 'title', 'image_url', 'banner_url', 'logo_url', 'synopsis', 'score'];
+    protected $fillable = ['mal_id', 'title', 'image_url', 'banner_url', 'logo_url', 'synopsis', 'score', 'genres'];
 
     public function readers(): HasMany
     {

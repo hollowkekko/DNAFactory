@@ -23,7 +23,7 @@
                         <div class="md:col-span-2">
                             <h4 class="text-white font-bold mb-4">Esplora</h4>
                             <ul class="space-y-3 text-sm">
-                                <li><a href="#" class="hover:text-white transition">Popolari</a></li>
+                                <li><a href="{{ route('anime.index', ['sort' => 'popular']) }}" class="hover:text-white transition">Popolari</a></li>
                                 <li><a href="#" class="hover:text-white transition">Simulcast</a></li>
                                 <li><a href="#" class="hover:text-white transition">Calendario delle uscite</a></li>
                                 <li><a href="#" class="hover:text-white transition">Notizie</a></li>
@@ -35,7 +35,7 @@
                         <div class="md:col-span-2">
                             <h4 class="text-white font-bold mb-4">Risorse</h4>
                             <ul class="space-y-3 text-sm">
-                                <li><a href="#" class="hover:text-white transition">Chi Siamo</a></li>
+                                <li><a href="{{ route('about') }}" class="hover:text-white transition">Chi Siamo</a></li>
                                 <li><a href="#" class="hover:text-white transition">Scarica le app</a></li>
                                 <li><a href="#" class="hover:text-white transition">Lavora con noi</a></li>
                                 <li><a href="#" class="hover:text-white transition">FAQ</a></li>
@@ -47,18 +47,18 @@
                             <h4 class="text-white font-bold mb-4">Account</h4>
                             <ul class="space-y-3 text-sm">
                                 <li><a href="#" class="hover:text-white transition">Cambia profilo</a></li>
-                                <li><a href="#" class="hover:text-white transition">I miei video</a></li>
-                                <li><a href="#" class="hover:text-white transition">DNAList</a></li>
-                                <li><a href="#" class="hover:text-white transition">Cronologia</a></li>
-                                <li><a href="#" class="hover:text-white transition">Il mio account</a></li>
+                                <li><a href="{{ route('watch-history.index') }}" class="hover:text-white transition">I miei video</a></li>
+                                <li><a href="{{ route('favorites.index') }}" class="hover:text-white transition">Salvati</a></li>
+                                <li><a href="{{ route('watch-history.index') }}" class="hover:text-white transition">Cronologia</a></li>
+                                <li><a href="{{ route('profile.edit') }}" class="hover:text-white transition">Il mio account</a></li>
                             </ul>
                         </div>
 
                         <div class="md:col-span-2">
                             <h4 class="text-white font-bold mb-4">Pagine utili</h4>
                             <ul class="space-y-3 text-sm">
-                                <li><a href="#" class="hover:text-white transition">Termini di Utilizzo</a></li>
-                                <li><a href="#" class="hover:text-white transition">Informativa sulla Privacy</a></li>
+                                <li><a href="{{ route('terms') }}" class="hover:text-white transition">Termini di Utilizzo</a></li>
+                                <li><a href="{{ route('privacy') }}" class="hover:text-white transition">Informativa sulla Privacy</a></li>
                                 <li><a href="#" class="hover:text-white transition">Impostazioni dei cookie</a></li>
                             </ul>
                         </div>

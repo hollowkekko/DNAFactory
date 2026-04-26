@@ -17,7 +17,7 @@ class Anime extends Model
     public $incrementing = false;
 
     // 3. Autorizziamo lo script a riempire questi campi
-    protected $fillable = ['mal_id', 'title', 'image_url', 'banner_url', 'logo_url', 'synopsis', 'score', 'episodes'];
+    protected $fillable = ['mal_id', 'title', 'image_url', 'banner_url', 'logo_url', 'synopsis', 'score', 'episodes', 'genres'];
 
     public function viewers(): HasMany
     {

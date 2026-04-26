@@ -19,19 +19,17 @@
 
                 {{-- Navigation Links (Desktop) --}}
                 <div class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-gray-300">
-                    <a href="#" class="hover:text-white transition">Novità</a>
-                    <a href="#" class="hover:text-white transition">Popolari</a>
-                    
-                    {{-- Dropdown Categorie (Gestito con Alpine per animazioni fluide) --}}
-                    <div class="relative" x-data="{ catOpen: false }" @mouseenter="catOpen = true" @mouseleave="catOpen = false">
-                        
+
+                    {{-- Dropdown Esplora (Novità, Popolari, Categorie) --}}
+                    <div class="relative" x-data="{ exploreOpen: false, exploreType: 'anime' }" @mouseenter="exploreOpen = true" @mouseleave="exploreOpen = false">
+
                         <button class="flex items-center hover:text-white transition focus:outline-none py-4">
-                            Categorie
-                            <svg class="w-4 h-4 ml-1 opacity-70 transition-transform duration-300" :class="catOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            Esplora
+                            <svg class="w-4 h-4 ml-1 opacity-70 transition-transform duration-300" :class="exploreOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
 
-                        {{-- Il Pannello Dropdown Categorie (Glassmorphism + Griglia) --}}
-                        <div x-show="catOpen" 
+                        {{-- Il Pannello Dropdown Esplora --}}
+                        <div x-show="exploreOpen"
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 scale-95 translate-y-2"
                              x-transition:enter-end="opacity-100 scale-100 translate-y-0"
@@ -39,24 +37,43 @@
                              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                              x-transition:leave-end="opacity-0 scale-95 translate-y-2"
                              class="absolute left-0 top-full mt-[-8px] w-[380px] bg-[#141414]/90 backdrop-blur-xl border border-gray-700/60 rounded-2xl shadow-2xl overflow-hidden font-medium text-sm text-gray-300 z-50 p-5" style="display: none;">
-                            
-                            {{-- Titolo sezione --}}
-                            <div class="mb-4 pb-2 border-b border-gray-700/60 text-xs font-bold text-gray-400 uppercase tracking-wider">
-                                Sfoglia per Genere
+
+                            {{-- Toggle Anime/Manga (Globale) --}}
+                            <div class="flex gap-2 mb-4">
+                                <button @click="exploreType = 'anime'" :class="exploreType === 'anime' ? 'bg-[#FF6600] text-white' : 'bg-white/10 text-gray-300'" class="flex-1 px-3 py-2 rounded-lg font-semibold text-sm hover:bg-[#FF6600] transition">
+                                    Anime
+                                </button>
+                                <button @click="exploreType = 'manga'" :class="exploreType === 'manga' ? 'bg-[#FF6600] text-white' : 'bg-white/10 text-gray-300'" class="flex-1 px-3 py-2 rounded-lg font-semibold text-sm hover:bg-[#FF6600] transition">
+                                    Manga
+                                </button>
                             </div>
 
-                            {{-- Griglia a 2 colonne --}}
-                            <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Azione</a>
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Avventura</a>
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Commedia</a>
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Drammatico</a>
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Fantasy</a>
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Fantascienza</a>
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Horror</a>
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Romantico</a>
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Thriller</a>
-                                <a href="#" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center"> Slice of Life</a>
+                            <div class="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-4"></div>
+
+                            {{-- Sezione Novità e Popolari --}}
+                            <div class="mb-4">
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Scopri</div>
+                                <div class="space-y-1">
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['sort' => 'latest']) }}' : '{{ route('manga.index', ['sort' => 'latest']) }}'" class="block px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition">Novità</a>
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['sort' => 'popular']) }}' : '{{ route('manga.index', ['sort' => 'popular']) }}'" class="block px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition">Popolari</a>
+                                </div>
+                            </div>
+
+                            <div class="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-4"></div>
+
+                            {{-- Sezione Categorie --}}
+                            <div>
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Sfoglia per Genere</div>
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Action']) }}' : '{{ route('manga.index', ['genre' => 'Action']) }}'" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center text-sm">Azione</a>
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Adventure']) }}' : '{{ route('manga.index', ['genre' => 'Adventure']) }}'" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center text-sm">Avventura</a>
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Comedy']) }}' : '{{ route('manga.index', ['genre' => 'Comedy']) }}'" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center text-sm">Commedia</a>
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Drama']) }}' : '{{ route('manga.index', ['genre' => 'Drama']) }}'" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center text-sm">Drammatico</a>
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Fantasy']) }}' : '{{ route('manga.index', ['genre' => 'Fantasy']) }}'" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center text-sm">Fantasy</a>
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Sci-Fi']) }}' : '{{ route('manga.index', ['genre' => 'Sci-Fi']) }}'" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center text-sm">Fantascienza</a>
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Horror']) }}' : '{{ route('manga.index', ['genre' => 'Horror']) }}'" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center text-sm">Horror</a>
+                                    <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Romance']) }}' : '{{ route('manga.index', ['genre' => 'Romance']) }}'" class="px-3 py-2.5 rounded-lg hover:bg-white/10 hover:text-white transition flex items-center text-sm">Romantico</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -67,7 +84,7 @@
             <div class="flex items-center space-x-5 text-gray-300">
                 
                 {{-- Cerca (Solo Icona) --}}
-                <button class="hover:text-white transition p-1 focus:outline-none">
+                <button @click="searchOpen = !searchOpen" class="hover:text-white transition p-1 focus:outline-none">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </button>
 
@@ -127,7 +144,7 @@
                                     <svg class="w-4 h-4 mr-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                                     Cambia profilo
                                 </a>
-                                <a href="#" class="flex items-center px-5 py-2.5 hover:bg-white/10 hover:text-white transition">
+                                <a href="{{ route('profile.edit') }}" class="flex items-center px-5 py-2.5 hover:bg-white/10 hover:text-white transition">
                                     <svg class="w-4 h-4 mr-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                     Impostazioni
                                 </a>
@@ -135,11 +152,15 @@
                                     <svg class="w-4 h-4 mr-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
                                     Salvati per dopo
                                 </a>
-                                <a href="#" class="flex items-center px-5 py-2.5 hover:bg-white/10 hover:text-white transition">
+                                <a href="{{ route('watch-history.index') }}" class="flex items-center px-5 py-2.5 hover:bg-white/10 hover:text-white transition">
                                     <svg class="w-4 h-4 mr-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    Cronologia
+                                    Cronologia Anime
                                 </a>
-                                
+                                <a href="{{ route('read-history.index') }}" class="flex items-center px-5 py-2.5 hover:bg-white/10 hover:text-white transition">
+                                    <svg class="w-4 h-4 mr-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Cronologia Manga
+                                </a>
+
                                 {{-- Link Notifiche con Badge --}}
                                 <a href="#" class="flex items-center justify-between px-5 py-2.5 hover:bg-white/10 hover:text-white transition">
                                     <div class="flex items-center">
@@ -183,6 +204,28 @@
                     </svg>
                 </button>
             </div>
+        </div>
+    </div>
+
+    {{-- Barra di Ricerca Espandibile --}}
+    <div x-show="searchOpen"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+         x-transition:leave-end="opacity-0 scale-95 translate-y-2"
+         class="border-b border-white/5 bg-black/40 backdrop-blur-lg" style="display: none;">
+        <div class="w-full px-4 sm:px-6 lg:px-12 py-4">
+            <form method="GET" action="{{ route('search.index') }}" class="flex items-center gap-3">
+                <input type="text" name="q" placeholder="Cerca anime, manga..." class="flex-1 bg-white/10 border border-gray-700/60 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[#FF6600] focus:ring-2 focus:ring-[#FF6600]/20 transition" autofocus>
+                <button type="submit" class="text-gray-400 hover:text-white transition p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+                <button type="button" @click="searchOpen = false" class="text-gray-400 hover:text-white transition p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </form>
         </div>
     </div>
 

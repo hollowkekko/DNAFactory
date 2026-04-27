@@ -9,9 +9,25 @@ use Illuminate\Http\Request;
 
 class AnimeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $animes = Anime::paginate(12);
+        $query = Anime::query();
+
+        // Filtra per genere se specificato
+        if ($request->has('genre')) {
+            $genre = $request->input('genre');
+            $query->whereJsonContains('genres', $genre);
+        }
+
+        $sort = $request->input('sort', 'popular');
+
+        if ($sort === 'latest') {
+            $query->orderBy('created_at', 'desc');
+        } else {
+            $query->orderBy('score', 'desc');
+        }
+
+        $animes = $query->paginate(12);
         return view('anime.index', compact('animes'));
     }
 

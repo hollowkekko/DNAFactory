@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Forza sempre dark mode */
+html.dark {
+    color-scheme: dark;
+}
+
+html.dark body {
+    background-color: #000;
+    color: #fff;
+}
 
 /* Nasconde la scrollbar ma permette lo scorrimento */
 .hide-scrollbar {

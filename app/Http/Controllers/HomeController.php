@@ -51,7 +51,7 @@ class HomeController extends Controller
             ->filter();  // Remove null entries
 
         // CAROSELLO 3: I 15 Anime più votati (TOP 10)
-        $top15Anime = Anime::orderByDesc('score')->take(15)->get();
+        $top15Anime = Anime::orderByDesc('score')->take(10)->get();
 
         // Elenco espandibile
         $expandableList = Anime::inRandomOrder()->take(20)->get();
@@ -116,7 +116,7 @@ class HomeController extends Controller
             ->filter();  // Remove null entries
 
         // CAROSELLO 3: I 15 Manga più votati
-        $top15Manga = Manga::orderByDesc('score')->take(15)->get();
+        $top15Manga = Manga::orderByDesc('score')->take(10)->get();
 
         // Sezione promozionale - 3 manga casuali
         $promotionalMangas = Manga::whereNotNull('synopsis')->inRandomOrder()->take(3)->get();

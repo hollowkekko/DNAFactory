@@ -110,32 +110,28 @@
     @endif
 
 {{-- 2. CAROSELLO 1 (I NOSTRI CONSIGLI) --}}
-    {{-- Rimosso px-4 sm:px-6 lg:px-12 da qui, lo gestiremo diversamente --}}
     <div class="w-full py-8 mt-8 relative z-20 overflow-hidden">
         
-        {{-- Manteniamo il padding sul titolo per allinearlo al resto del layout --}}
         <h2 class="text-xl font-bold mb-4 text-white px-4 sm:px-6 lg:px-12">I nostri consigli per te</h2>
 
-        {{-- Rimosso i margini negativi -mx-* --}}
         <div x-data="{ scrollNext() { $refs.slider1.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider1.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative group">
 
-            {{-- Frecce (posizionate con un po' di margine per non coprire il bordo estremo) --}}
-            <button @click="scrollPrev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+            {{-- Sfumatura Sinistra (Nasconde il taglio netto della card!) --}}
+            <div class="absolute left-0 top-0 bottom-0 w-4 sm:w-6 lg:w-12 bg-gradient-to-r from-black to-transparent z-30 pointer-events-none"></div>
 
-            {{-- 
-                IL SEGRETO È QUI: 
-                - pl-4 sm:pl-6 lg:pl-12 dà lo spazio iniziale al primo elemento.
-                - pr-4 sm:pr-6 lg:pr-12 dà lo spazio finale all'ultimo.
-                - Quando scorri, gli elementi intermedi andranno "sotto" il bordo sinistro coprendo quel padding!
-            --}}
-            <div x-ref="slider1" class="flex overflow-x-auto space-x-3 pb-4 hide-scrollbar snap-x snap-mandatory overflow-y-visible pt-8 relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
+            {{-- Freccia Sinistra --}}
+            <button @click="scrollPrev" class="absolute left-4 -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl" style="top: 211px;">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            {{-- Contenitore Slider --}}
+            <div x-ref="slider1" class="flex overflow-x-auto space-x-3 hide-scrollbar snap-x snap-mandatory overflow-y-visible pt-4 pb-4 relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
                 
                 @foreach($recommendedAnime as $index => $anime)
                     <div class="flex-none w-[260px] snap-start group/card relative z-20 scroll-ml-4 sm:scroll-ml-6 lg:scroll-ml-12"
                          x-data="{ isFavorite: {{ in_array($anime->mal_id, $favoriteAnimeIds) ? 'true' : 'false' }} }"
                          @toggle-favorite.window="if ($event.detail === {{ $anime->mal_id }}) isFavorite = !isFavorite">
 
-                        <a href="{{ route('anime.show', $anime->mal_id) }}?action=play" class="block relative rounded-lg overflow-hidden aspect-[2/3] border-2 border-transparent hover:border-[#FF6600] hover:scale-105 transition cursor-pointer duration-300 shadow-2xl hover:shadow-orange-500/50">
+                        <a href="{{ route('anime.show', $anime->mal_id) }}?action=play" class="block relative rounded-lg overflow-hidden aspect-[2/3] border-2 border-transparent hover:border-[#FF6600] hover:scale-105 transition-all cursor-pointer duration-300 shadow-2xl hover:shadow-orange-500/50">
                             <img src="{{ $anime->image_url }}" class="w-full h-full object-cover">
 
                              {{-- Overlay Sfumato inferiore --}}
@@ -143,21 +139,20 @@
 
                             {{-- Hover Overlay: Riquadro Arancione con Play --}}
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition flex items-end justify-center pb-8">
-                                <div class="bg-[#FF6600] hover:bg-[#FF8533] rounded px-6 py-3 flex items-center gap-2 cursor-pointer">
+                                <div class="bg-[#FF6600] hover:bg-[#FF8533] rounded px-6 py-3 flex items-center gap-2 cursor-pointer shadow-lg">
                                     <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
-                                    <span class="text-white font-bold text-sm">Riproduci stagione 1 ep 1</span>
+                                    <span class="text-white font-bold text-sm">Riproduci S1 E1</span>
                                 </div>
                             </div>
 
-                            {{-- Badge in alto a sinistra (Alternati per estetica) --}}
+                            {{-- Badge in alto a sinistra --}}
                             @if($index % 3 == 0)
-                                <div class="absolute top-0 left-0 bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br">Nuova stagione</div>
+                                <div class="absolute top-0 left-0 bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br shadow">Nuova stagione</div>
                             @elseif($index % 4 == 0)
-                                <div class="absolute top-0 left-0 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br">Stagione finale</div>
+                                <div class="absolute top-0 left-0 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br shadow">Stagione finale</div>
                             @endif
                         </a>
 
-                        {{-- Titolo sotto il riquadro con fade ai bordi --}}
                         {{-- Dettagli: Sub, Dub, Episodi e Voto --}}
                         <div class="flex items-center justify-between mt-3 mb-1 px-1">
                             <div class="flex items-center space-x-2 text-[10px] text-gray-400 font-medium">
@@ -165,7 +160,7 @@
                                     <span class="bg-gray-800 text-gray-300 px-1 py-0.5 rounded text-[9px] font-bold uppercase border border-gray-700">Sub</span>
                                     <span class="bg-gray-800 text-gray-300 px-1 py-0.5 rounded text-[9px] font-bold uppercase border border-gray-700">Dub</span>
                                 </div>
-                                <span>S1 E1</span> {{-- Placeholder episodi --}}
+                                <span>S1 E1</span>
                             </div>
                             <div class="flex items-center text-[11px] font-bold text-gray-300">
                                 <svg class="w-3 h-3 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
@@ -173,10 +168,10 @@
                             </div>
                         </div>
 
-                        {{-- Titolo sotto i dettagli --}}
+                        {{-- Titolo --}}
                         <h3 class="text-sm font-bold text-white line-clamp-1 drop-shadow group-hover/card:text-[#FF6600] transition px-1" title="{{ $anime->title }}">{{ $anime->title }}</h3>
 
-                        {{-- Bottone Preferiti (AJAX POST) --}}
+                        {{-- Bottone Preferiti --}}
                         <button @click="toggleFavorite({{ $anime->mal_id }})"
                                 class="absolute top-0 right-0 z-10 p-1.5 rounded-bl shadow transition group-hover/card:opacity-100 group-hover/card:scale-105 origin-top-right"
                                 :class="isFavorite ? 'bg-[#FF6600] text-white hover:bg-[#FF8533]' : 'bg-black/60 text-gray-400 hover:bg-black/80 hover:text-white group-hover/card:bg-black/80 group-hover/card:text-white'">
@@ -184,14 +179,15 @@
                         </button>
                     </div>
                 @endforeach
-
-                {{-- Overlay fade - Posizionati in modo assoluto ma ancorati allo scroll --}}
-                {{-- Attenzione: questi fade potrebbero sembrare strani se il padding è alto, valuta se tenerli --}}
-                <div class="fixed left-0 top-0 bottom-0 w-8 md:w-16 pointer-events-none z-10 bg-gradient-to-r from-black to-transparent opacity-80"></div>
-                <div class="fixed right-0 top-0 bottom-0 w-8 md:w-16 pointer-events-none z-10 bg-gradient-to-l from-black to-transparent opacity-80"></div>
             </div>
 
-            <button @click="scrollNext" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+            {{-- Sfumatura Destra --}}
+            <div class="absolute right-0 top-0 bottom-0 w-4 sm:w-6 lg:w-12 bg-gradient-to-l from-black to-transparent z-30 pointer-events-none"></div>
+
+            {{-- Freccia Destra --}}
+            <button @click="scrollNext" class="absolute right-4 -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl" style="top: 211px;">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
         </div>
     </div>
 
@@ -201,9 +197,14 @@
 
         <div x-data="{ scrollNext() { $refs.slider1manga.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider1manga.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative group">
 
-            <button @click="scrollPrev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+            {{-- Sfumatura Sinistra Manga --}}
+            <div class="absolute left-0 top-0 bottom-0 w-4 sm:w-6 lg:w-12 bg-gradient-to-r from-black to-transparent z-30 pointer-events-none"></div>
 
-            <div x-ref="slider1manga" class="flex overflow-x-auto space-x-3 pb-4 hide-scrollbar snap-x snap-mandatory overflow-y-visible pt-8 relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
+            <button @click="scrollPrev" class="absolute left-4 -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl" style="top: 211px;">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+
+            <div x-ref="slider1manga" class="flex overflow-x-auto space-x-3 pb-4 hide-scrollbar snap-x snap-mandatory overflow-y-visible pt-4 relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
 
                 @foreach($recommendedManga as $index => $manga)
                     <div class="flex-none w-[260px] snap-start group/card relative z-20 scroll-ml-4 sm:scroll-ml-6 lg:scroll-ml-12"
@@ -216,7 +217,7 @@
                              {{-- Overlay Sfumato inferiore --}}
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
 
-                            {{-- Hover Overlay: Riquadro Arancione con Play --}}
+                            {{-- Hover Overlay --}}
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/card:opacity-100 transition flex items-end justify-center pb-8">
                                 <div class="bg-[#FF6600] hover:bg-[#FF8533] rounded px-6 py-3 flex items-center gap-2 cursor-pointer">
                                     <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
@@ -255,11 +256,12 @@
                     </div>
                 @endforeach
 
-                <div class="fixed left-0 top-0 bottom-0 w-8 md:w-16 pointer-events-none z-10 bg-gradient-to-r from-black to-transparent opacity-80"></div>
-                <div class="fixed right-0 top-0 bottom-0 w-8 md:w-16 pointer-events-none z-10 bg-gradient-to-l from-black to-transparent opacity-80"></div>
             </div>
 
-            <button @click="scrollNext" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+            {{-- Sfumatura Destra Manga --}}
+            <button @click="scrollNext" class="absolute right-4 -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl" style="top: 211px;">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
         </div>
     </div>
 
@@ -279,10 +281,12 @@
         <div x-data="{ scrollNext() { $refs.slider2.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider2.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative">
 
             {{-- Freccia Sinistra --}}
-            <button @click="scrollPrev" class="absolute left-4 top-[35%] -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+            <button @click="scrollPrev" class="absolute left-4 -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl" style="top: 98px;">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
 
-            {{-- Contenitore Slider (Aggiunto pt-4, -mt-2 e pb-8 per dare spazio allo zoom del riquadro) --}}
-            <div x-ref="slider2" class="flex overflow-x-auto space-x-4 pb-8 pt-4 -mt-2 hide-scrollbar snap-x snap-mandatory overflow-y-visible relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
+            {{-- Contenitore Slider (Aggiunto pt-4, -mt-2 e pb-4 per dare spazio allo zoom del riquadro) --}}
+            <div x-ref="slider2" class="flex overflow-x-auto space-x-4 pb-4 pt-4 -mt-2 hide-scrollbar snap-x snap-mandatory overflow-y-visible relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
                 
                 @foreach($continueWatching as $anime)
                     {{-- Card Orizzontale --}}
@@ -333,7 +337,9 @@
             </div>
 
             {{-- Freccia Destra --}}
-            <button @click="scrollNext" class="absolute right-4 top-[35%] -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+            <button @click="scrollNext" class="absolute right-4 -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl" style="top: 98px;">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
         </div>
     </div>
     @endif
@@ -354,10 +360,12 @@
         <div x-data="{ scrollNext() { $refs.slider2manga.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider2manga.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative">
 
             {{-- Freccia Sinistra --}}
-            <button @click="scrollPrev" class="absolute left-4 top-[35%] -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
-
+            <button @click="scrollPrev" class="absolute left-4 -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl" style="top: 98px;">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            
             {{-- Contenitore Slider --}}
-            <div x-ref="slider2manga" class="flex overflow-x-auto space-x-4 pb-8 pt-4 -mt-2 hide-scrollbar snap-x snap-mandatory overflow-y-visible relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
+            <div x-ref="slider2manga" class="flex overflow-x-auto space-x-4 pb-4 pt-4 -mt-2 hide-scrollbar snap-x snap-mandatory overflow-y-visible relative pl-4 sm:pl-6 lg:pl-12 pr-4 sm:pr-6 lg:pr-12">
 
                 @foreach($continueReading as $manga)
                     {{-- Card Orizzontale --}}
@@ -404,7 +412,9 @@
             </div>
 
             {{-- Freccia Destra --}}
-            <button @click="scrollNext" class="absolute right-4 top-[35%] -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+            <button @click="scrollNext" class="absolute right-4 -translate-y-1/2 z-40 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block border border-gray-700 shadow-xl" style="top: 98px;">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>       
         </div>
     </div>
     @endif
@@ -491,13 +501,14 @@
         @endif
     </div>
 
-
+    {{-- TOP ANIME --}}
     <div class="w-full px-4 sm:px-6 lg:px-12 py-8">
         <h2 class="text-xl font-bold mb-4 text-white uppercase">TOP 10</h2>
 
         <div x-data="{ scrollNext() { $refs.slider4.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider4.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative group -mx-4 sm:-mx-6 lg:-mx-12">
 
-            <button @click="scrollPrev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+            {{-- Freccia Sinistra (Centro perfetto a 211px) --}}
+            <button @click="scrollPrev" class="absolute left-4 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block shadow-xl border border-gray-700" style="top: 211px;"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
 
             <div x-ref="slider4" class="flex overflow-x-auto overflow-y-visible space-x-20 pb-16 pt-4 hide-scrollbar snap-x snap-mandatory px-4 sm:px-6 lg:px-12">
                 @foreach($top15Anime as $index => $anime)
@@ -560,7 +571,8 @@
                 @endforeach
             </div>
 
-            <button @click="scrollNext" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+            {{-- Freccia Destra (Centro perfetto a 211px) --}}
+            <button @click="scrollNext" class="absolute right-4 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block shadow-xl border border-gray-700" style="top: 211px;"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
 
             {{-- Overlay fade su entrambi i lati (solo estremita) --}}
             <div class="absolute left-0 top-0 bottom-0 w-32 pointer-events-none z-10" style="background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, transparent 100%);"></div>
@@ -574,7 +586,8 @@
 
         <div x-data="{ scrollNext() { $refs.slider4manga.scrollBy({ left: 800, behavior: 'smooth' }); }, scrollPrev() { $refs.slider4manga.scrollBy({ left: -800, behavior: 'smooth' }); } }" class="relative group -mx-4 sm:-mx-6 lg:-mx-12">
 
-            <button @click="scrollPrev" class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+            {{-- Freccia Sinistra (Centro perfetto a 211px) --}}
+            <button @click="scrollPrev" class="absolute left-4 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block shadow-xl border border-gray-700" style="top: 211px;"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
 
             <div x-ref="slider4manga" class="flex overflow-x-auto overflow-y-visible space-x-20 pb-16 pt-4 hide-scrollbar snap-x snap-mandatory px-4 sm:px-6 lg:px-12">
                 @foreach($top15Manga as $index => $manga)
@@ -632,7 +645,8 @@
                 @endforeach
             </div>
 
-            <button @click="scrollNext" class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
+            {{-- Freccia Destra (Centro perfetto a 211px) --}}
+            <button @click="scrollNext" class="absolute right-4 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block shadow-xl border border-gray-700" style="top: 211px;"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
 
             {{-- Overlay fade --}}
             <div class="absolute left-0 top-0 bottom-0 w-32 pointer-events-none z-10" style="background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, transparent 100%);"></div>
@@ -762,9 +776,9 @@
 
         <div class="relative group -mx-4 sm:-mx-6 lg:-mx-12 px-4 sm:px-6 lg:px-12 pt-8">
             
-            {{-- Freccia Sinistra (Centrata rispetto all'altezza delle immagini) --}}
+            {{-- Freccia Sinistra Spotlight (Portata a z-50 per non farsi coprire) --}}
             <button @click="prevSpotlight()"
-                    class="absolute left-4 top-[120px] z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl">
+                    class="absolute left-4 -translate-y-1/2 z-50 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl" style="top: 182px;">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
             </button>
 
@@ -821,8 +835,9 @@
             </div>
 
             {{-- Freccia Destra --}}
+            {{-- Freccia Destra Spotlight (Centro perfetto a 182px) --}}
             <button @click="nextSpotlight()"
-                    class="absolute right-4 top-[120px] z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl">
+                    class="absolute right-4 -translate-y-1/2 z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl" style="top: 182px;">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </button>
         </div>
@@ -868,9 +883,9 @@
 
         <div class="relative group -mx-4 sm:-mx-6 lg:-mx-12 px-4 sm:px-6 lg:px-12 pt-8">
 
-            {{-- Freccia Sinistra --}}
+            {{-- Freccia Sinistra Spotlight Manga (Portata a z-50) --}}
             <button @click="prevSpotlight()"
-                    class="absolute left-4 top-[120px] z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl">
+                    class="absolute left-4 -translate-y-1/2 z-50 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl" style="top: 182px;">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
             </button>
 
@@ -924,9 +939,9 @@
                 </template>
             </div>
 
-            {{-- Freccia Destra --}}
+            {{-- Freccia Destra Spotlight Manga (Centro perfetto a 182px) --}}
             <button @click="nextSpotlight()"
-                    class="absolute right-4 top-[120px] z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl">
+                    class="absolute right-4 -translate-y-1/2 z-40 bg-black/90 text-white p-3 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:bg-[#FF6600] hidden md:block border border-gray-800 shadow-xl" style="top: 182px;">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </button>
         </div>

@@ -946,38 +946,6 @@
             </button>
         </div>
     </div>
-<script>
-function toggleFavorite(animeId) {
-    fetch(`/favorites/anime/${animeId}`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .catch(error => console.error('Error:', error))
-    .finally(() => {
-        // Dispatch event to update Alpine.js state
-        window.dispatchEvent(new CustomEvent('toggle-favorite', { detail: animeId }));
-    });
-}
 
-function toggleFavoriteManga(mangaId) {
-    fetch(`/favorites/manga/${mangaId}`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .catch(error => console.error('Error:', error))
-    .finally(() => {
-        // Dispatch event to update Alpine.js state
-        window.dispatchEvent(new CustomEvent('toggle-favorite-manga', { detail: mangaId }));
-    });
-}
-</script>
 
 </x-app-layout>

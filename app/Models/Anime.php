@@ -19,6 +19,11 @@ class Anime extends Model
     // 3. Autorizziamo lo script a riempire questi campi
     protected $fillable = ['mal_id', 'title', 'image_url', 'banner_url', 'logo_url', 'synopsis', 'score', 'episodes', 'genres'];
 
+    // 4. Cast per convertire genres da JSON a array
+    protected $casts = [
+        'genres' => 'array',
+    ];
+
     public function viewers(): HasMany
     {
         return $this->hasMany(WatchHistory::class, 'anime_id', 'mal_id');

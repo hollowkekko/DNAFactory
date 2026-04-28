@@ -32,6 +32,17 @@
                             @endif
                         </div>
 
+                        {{-- Generi --}}
+                        @if($anime->genres && count($anime->genres) > 0)
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                @foreach($anime->genres as $genre)
+                                    <span class="inline-block bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full">
+                                        {{ $genre }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        @endif
+
                         <h3 class="text-lg font-bold mb-2">Trama</h3>
                         <p class="text-gray-600 leading-relaxed">
                             {{ $anime->synopsis }}

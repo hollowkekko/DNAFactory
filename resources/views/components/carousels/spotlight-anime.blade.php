@@ -12,6 +12,7 @@
 <div class="w-full px-4 sm:px-6 lg:px-12 py-16 mb-20 relative"
      x-data="{
         animes: {{ \Illuminate\Support\Js::from($safeSpotlightData) }},
+        favoriteIds: {{ \Illuminate\Support\Js::from($favoriteAnimeIds) }},
         activeIndex: 0,
         nextSpotlight() {
             this.activeIndex = (this.activeIndex + 1) % this.animes.length;
@@ -32,8 +33,15 @@
                     slider.scrollTo({ left: element.offsetLeft - 50, behavior: 'smooth' });
                 }
             });
+        },
+        isFavorite(animeId) {
+            return this.favoriteIds.includes(animeId);
+        },
+        toggleFavoriteClick(animeId) {
+            this.toggleFavorite(animeId);
         }
-     }">
+     }"
+     @toggle-favorite.window="if ($event.detail === animes[activeIndex]?.mal_id) favoriteIds.includes($event.detail) ? favoriteIds = favoriteIds.filter(id => id !== $event.detail) : favoriteIds.push($event.detail)">
 
     <div class="relative group -mx-4 sm:-mx-6 lg:-mx-12 px-4 sm:px-6 lg:px-12 pt-8">
 
@@ -85,7 +93,9 @@
                                 <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4l12 6-12 6z"/></svg>
                                 Riproduci Ora
                             </a>
-                            <button class="border border-gray-600 text-gray-400 hover:text-white p-2.5 rounded transition">
+                            <button @click="toggleFavoriteClick(anime.mal_id)"
+                                    class="border border-gray-600 text-gray-400 hover:text-white p-2.5 rounded transition"
+                                    :class="isFavorite(anime.mal_id) ? 'bg-[#FF6600] text-white border-[#FF6600]' : ''">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
                             </button>
                         </div>

@@ -20,8 +20,8 @@
 
     <x-banners.promotional-manga :promotionalManga="$promotionalManga" :favoriteMangaIds="$favoriteMangaIds" />
 
-    <x-carousels.spotlight-anime :spotlightAnime="$spotlightAnime" />
+    <x-carousels.spotlight-anime :spotlightAnime="$spotlightAnime" :favoriteAnimeIds="$favoriteAnimeIds" />
 
-    <x-carousels.spotlight-manga :spotlightManga="$spotlightManga" />
+    <x-carousels.spotlight-manga :spotlightManga="$spotlightManga" :favoriteMangaIds="$favoriteMangaIds" />
 
 </x-app-layout>

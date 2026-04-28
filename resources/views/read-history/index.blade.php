@@ -15,7 +15,7 @@
                     @if($history->manga)
                         <div class="group/card relative cursor-pointer"
                              x-data="{ isFavorite: {{ in_array($history->manga->mal_id, $favoriteMangaIds) ? 'true' : 'false' }} }"
-                             @toggle-favorite.window="if ($event.detail === {{ $history->manga->mal_id }}) isFavorite = !isFavorite">
+                             @toggle-favorite-manga.window="if ($event.detail === {{ $history->manga->mal_id }}) isFavorite = !isFavorite">
 
                             <a href="{{ route('manga.show', $history->manga->mal_id) }}?action=read" class="block relative rounded-lg overflow-hidden aspect-[2/3] border-2 border-transparent hover:border-[#FF6600] hover:scale-105 transition cursor-pointer duration-300 shadow-2xl hover:shadow-orange-500/50">
                                 <img src="{{ $history->manga->image_url }}" class="w-full h-full object-cover">
@@ -43,7 +43,7 @@
                             </h3>
 
                             {{-- Bottone Preferiti --}}
-                            <button @click="toggleFavorite({{ $history->manga->mal_id }})"
+                            <button @click="toggleFavoriteManga({{ $history->manga->mal_id }})"
                                     class="absolute top-0 right-0 z-10 p-1.5 rounded-bl shadow transition group-hover/card:opacity-100 group-hover/card:scale-105 origin-top-right"
                                     :class="isFavorite ? 'bg-[#FF6600] text-white hover:bg-[#FF8533]' : 'bg-black/60 text-gray-400 hover:bg-black/80 hover:text-white group-hover/card:bg-black/80 group-hover/card:text-white'">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>
@@ -61,7 +61,7 @@
     </div>
 
     <script>
-    function toggleFavorite(mangaId) {
+    function toggleFavoriteManga(mangaId) {
         fetch(`/favorites/manga/${mangaId}`, {
             method: 'POST',
             headers: {
@@ -72,7 +72,7 @@
         .then(response => response.json())
         .catch(error => console.error('Error:', error))
         .finally(() => {
-            window.dispatchEvent(new CustomEvent('toggle-favorite', { detail: mangaId }));
+            window.dispatchEvent(new CustomEvent('toggle-favorite-manga', { detail: mangaId }));
         });
     }
     </script>

@@ -20,7 +20,7 @@
                 {{-- Dettagli Anime --}}
                 <div class="p-8 w-full md:w-2/3 flex flex-col justify-between">
                     <div>
-                        <h1 class="text-3xl font-bold mb-4">{{ $anime->title }}</h1>
+                        <h1 class="text-3xl font-bold mb-4 text-[#FF6600]">{{ $anime->title }}</h1>
                         <div class="flex flex-wrap gap-3 mb-6">
                             <span class="inline-block bg-yellow-100 text-yellow-800 text-sm font-bold px-3 py-1 rounded-full">
                                 ⭐ Voto: {{ $anime->score ?? 'N/A' }} / 10

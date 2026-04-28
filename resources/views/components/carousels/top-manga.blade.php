@@ -8,7 +8,7 @@
         <button @click="scrollPrev" class="absolute left-4 -translate-y-1/2 z-30 bg-black/80 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition hover:text-[#FF6600] hidden md:block shadow-xl border border-gray-700" style="top: 211px;"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
 
         <div x-ref="slider4manga" class="flex overflow-x-auto overflow-y-visible space-x-20 pb-16 pt-4 hide-scrollbar snap-x snap-mandatory px-4 sm:px-6 lg:px-12">
-            @foreach($top15Manga as $index => $manga)
+            @foreach($top10Manga as $index => $manga)
                 <div class="flex-none snap-start group/card relative {{ $index === 0 ? 'ml-16' : '' }}" style="width: auto;"
                      x-data="{ isFavorite: {{ in_array($manga->mal_id, $favoriteMangaIds) ? 'true' : 'false' }} }"
                      @toggle-favorite-manga.window="if ($event.detail === {{ $manga->mal_id }}) isFavorite = !isFavorite">

@@ -50,8 +50,8 @@ class HomeController extends Controller
             ->map(fn($h) => $h->anime)
             ->filter();  // Remove null entries
 
-        // CAROSELLO 3: I 15 Anime più votati (TOP 10)
-        $top15Anime = Anime::orderByDesc('score')->take(10)->get();
+        // CAROSELLO 3: I 10 Anime più votati (TOP 10)
+        $top10Anime = Anime::orderByDesc('score')->take(10)->get();
 
         // Elenco espandibile
         $expandableList = Anime::inRandomOrder()->take(20)->get();
@@ -115,8 +115,8 @@ class HomeController extends Controller
             ->map(fn($h) => $h->manga)
             ->filter();  // Remove null entries
 
-        // CAROSELLO 3: I 15 Manga più votati
-        $top15Manga = Manga::orderByDesc('score')->take(10)->get();
+        // CAROSELLO 3: I 10 Manga più votati
+        $top10Manga = Manga::orderByDesc('score')->take(10)->get();
 
         // Sezione promozionale - 3 manga casuali
         $promotionalMangas = Manga::whereNotNull('synopsis')->inRandomOrder()->take(3)->get();
@@ -148,7 +148,7 @@ class HomeController extends Controller
             'heroAnimes',
             'recommendedAnime',
             'continueWatching',
-            'top15Anime',
+            'top10Anime',
             'expandableList',
             'promotionalAnime',
             'promotionalAnime2',
@@ -159,7 +159,7 @@ class HomeController extends Controller
             'heroMangas',
             'recommendedManga',
             'continueReading',
-            'top15Manga',
+            'top10Manga',
             'promotionalManga',
             'promotionalManga2',
             'promotionalManga3',

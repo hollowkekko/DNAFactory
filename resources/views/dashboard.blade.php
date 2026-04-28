@@ -12,9 +12,9 @@
 
     <x-banners.promotional-side :promotionalAnime2="$promotionalAnime2" :promotionalAnime3="$promotionalAnime3" :favoriteAnimeIds="$favoriteAnimeIds" />
 
-    <x-carousels.top-anime :top15Anime="$top15Anime" :favoriteAnimeIds="$favoriteAnimeIds" />
+    <x-carousels.top-anime :top10Anime="$top10Anime" :favoriteAnimeIds="$favoriteAnimeIds" />
 
-    <x-carousels.top-manga :top15Manga="$top15Manga" :favoriteMangaIds="$favoriteMangaIds" />
+    <x-carousels.top-manga :top10Manga="$top10Manga" :favoriteMangaIds="$favoriteMangaIds" />
 
     <x-banners.promotional-anime :promotionalAnime="$promotionalAnime" :favoriteAnimeIds="$favoriteAnimeIds" />
 

@@ -1,66 +1,60 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎬 DNAFactory - Piattaforma Anime & Manga
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Una moderna piattaforma web fullstack sviluppata in **Laravel 10** per esplorare, scoprire e gestire anime e manga, integrando le API pubbliche di **Jikan** e **AniList**.
 
-## About Laravel
+Questo progetto è stato realizzato come **Test Pratico Fullstack** per la candidatura presso DNA Group.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Funzionalità Sviluppate (Requisiti Traccia)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+✅ **Architettura Fullstack**
+- Sviluppo completo sia della parte Backend (Laravel/PHP) che Frontend (Blade, TailwindCSS, Alpine.js) rispettando il mockup grafico Adobe XD fornito.
 
-## Learning Laravel
+✅ **Importazione e Persistenza Dati (Backend)**
+- Creazione di un comando custom (`php artisan jikan:fetch`) per importare l'anagrafica di Anime e Manga tramite le API REST di Jikan.
+- **Gestione Rate Limit:** Il comando implementa meccanismi di *delay* (`sleep`) e di *retry* nativi di Laravel per rispettare rigidamente il rate limit di 3 richieste/secondo imposto da Jikan API, garantendo un'importazione stabile senza crash.
+- Logica idempotente (`updateOrCreate`) per consentire esecuzioni sicure tramite Cron Job giornalieri, aggiornando i record esistenti ed evitando duplicati.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+✅ **Recensioni in Real-time (Senza persistenza)**
+- Le recensioni vengono caricate in real-time chiamando le API di Jikan dalla pagina di dettaglio.
+- **Cache Statica (Opzionale):** È stato aggiunto un livello di cache statica di 24 ore (`JikanCacheService`) per ottimizzare i tempi di caricamento, ridurre il carico sulle API e massimizzare le performance.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+✅ **Sistema Utenti e Preferiti**
+- Autenticazione protetta (Login, Registrazione, Modifica profilo) tramite Laravel Breeze.
+- Sistema di "Aggiungi/Rimuovi ai Preferiti" asincrono gestito nel frontend con Alpine.js.
+- **Morphic Relationships:** Utilizzate nel database per gestire con un'unica tabella (`favorites`) e un unico Controller le relazioni verso i Modelli `Anime` e `Manga`.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🚀 L'Extra Mile (Scelte Architetturali e UI)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Oltre ai requisiti minimi richiesti, ho implementato ulteriori feature per ottimizzare la manutenibilità e migliorare notevolmente la User Experience:
 
-### Premium Partners
+1. **Integrazione GraphQL (AniList API):** Poiché le API di Jikan non forniscono i banner ad alta risoluzione o i loghi necessari per riprodurre fedelmente la UI "stile Netflix" richiesta dal mockup Adobe XD, ho scritto il servizio `AniListService`. Questo esegue interrogazioni GraphQL in tempo reale al database di AniList, usando il `mal_id` come chiave esterna per recuperare dinamicamente le copertine mancanti.
+2. **Design Pattern (Service Layer):** Il Controller principale della dashboard e le logiche di caching sono state estratte in file **Service** dedicati. Questo rispetta il *Single Responsibility Principle* (SRP), mantenendo i Controller snelli e scalabili.
+3. **Frontend a Componenti:** L'interfaccia complessa della Dashboard è stata suddivisa in Componenti Blade riutilizzabili (`<x-carousel>`). Alpine.js orchestra le animazioni complesse (Spotlight, Hero) ricevendo dati formattati in JSON dal server, prevenendo il ricaricamento della pagina e offrendo una navigazione fluida e istantanea.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## 📋 Setup del Progetto
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Prerequisiti
+- PHP 8.1+
+- Composer
+- Node.js & npm
+- Database (SQLite, MySQL o PostgreSQL)
 
-## Code of Conduct
+### Installazione Veloce
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. **Clona il repository e installa le dipendenze:**
+   ```bash
+   git clone <inserisci-url-o-nome-repo>
+   cd DNAFactory
+   composer install
+   npm install
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2. **Configura l'ambiente:** 
+    ```bash
+    cp .env.example .env
+    php artisan key:generate

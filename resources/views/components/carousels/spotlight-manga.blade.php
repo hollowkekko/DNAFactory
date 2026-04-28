@@ -38,7 +38,7 @@
             return this.favoriteIds.includes(mangaId);
         },
         toggleFavoriteClick(mangaId) {
-            this.toggleFavoriteManga(mangaId);
+            window.toggleFavoriteManga(mangaId);
         }
      }"
      @toggle-favorite-manga.window="if ($event.detail === mangas[activeIndex]?.mal_id) favoriteIds.includes($event.detail) ? favoriteIds = favoriteIds.filter(id => id !== $event.detail) : favoriteIds.push($event.detail)">

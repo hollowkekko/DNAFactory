@@ -38,7 +38,7 @@
             return this.favoriteIds.includes(animeId);
         },
         toggleFavoriteClick(animeId) {
-            this.toggleFavorite(animeId);
+            window.toggleFavorite(animeId);
         }
      }"
      @toggle-favorite.window="if ($event.detail === animes[activeIndex]?.mal_id) favoriteIds.includes($event.detail) ? favoriteIds = favoriteIds.filter(id => id !== $event.detail) : favoriteIds.push($event.detail)">

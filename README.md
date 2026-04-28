@@ -58,3 +58,22 @@ Oltre ai requisiti minimi richiesti, ho implementato ulteriori feature per ottim
     ```bash
     cp .env.example .env
     php artisan key:generate
+Assicurati di configurare correttamente la connessione al database nel file .env.
+
+3. **Inizializza il Database:**
+    ```bash
+    php artisan migrate
+
+4. **Compila gli assets frontend (Tailwind):**
+    ```bash
+    npm run build
+
+5. **Popola il Database con le API:**
+    ```bash
+    # Scarica i primi record dalle API Jikan (impostato a 5 pagine di default)
+    php artisan jikan:fetch
+
+6. **Avvia il server locale:**
+    ```bash
+    php artisan serve
+

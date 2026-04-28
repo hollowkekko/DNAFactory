@@ -35,10 +35,12 @@ class FetchJikanData extends Command
         for ($page = 1; $page <= $pages; $page++) {
             $this->line("Scaricando $type - pagina $page...");
 
-            $response = Http::timeout(10)->get("https://api.jikan.moe/v4/$type", [
-                'page' => $page,
-                'limit' => 25
-            ]);
+                $response = Http::timeout(10)
+                    ->retry(3, 2000)
+                    ->get("https://api.jikan.moe/v4/$type", [
+                        'page' => $page,
+                        'limit' => 25
+                ]);
 
             if ($response->successful()) {
                 $items = $response->json()['data'] ?? [];

@@ -20,6 +20,16 @@
                 {{-- Navigation Links (Desktop) --}}
                 <div class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-gray-300">
 
+                    {{-- Link Anime --}}
+                    <a href="{{ route('anime.index') }}" class="hover:text-white transition py-4">
+                        Anime
+                    </a>
+
+                    {{-- Link Manga --}}
+                    <a href="{{ route('manga.index') }}" class="hover:text-white transition py-4">
+                        Manga
+                    </a>
+
                     {{-- Dropdown Esplora (Novità, Popolari, Categorie) --}}
                     <div class="relative" x-data="{ exploreOpen: false, exploreType: 'anime' }" @mouseenter="exploreOpen = true" @mouseleave="exploreOpen = false">
 
@@ -230,8 +240,13 @@
     </div>
 
     {{-- Menu Mobile Espanso --}}
-    <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" class="lg:hidden border-t border-white/10 bg-black/95 backdrop-blur-md" style="display: none;">
-        <div class="px-4 pt-2 pb-4 space-y-1">
+<div x-show="mobileMenuOpen" 
+         @click.away="mobileMenuOpen = false" 
+         x-effect="document.body.style.overflow = mobileMenuOpen ? 'hidden' : ''"
+         class="lg:hidden h-[calc(100dvh-4rem)] w-full border-t border-white/5 overflow-y-auto overscroll-contain" 
+         style="display: none;">
+        
+        <div class="px-4 pt-2 pb-12 space-y-1">
 
             {{-- Dropdown Esplora Mobile --}}
             <div class="relative" x-data="{ exploreMobileOpen: false, exploreType: 'anime' }">

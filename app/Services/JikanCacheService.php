@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Http;
 
 class JikanCacheService
 {
-    /**
-     * Durata del cache in minuti (24 ore = 1440 minuti)
-     */
+    
+    // Durata del cache in minuti (24 ore = 1440 minuti)
+    
     private const CACHE_DURATION = 1440;
 
-    /**
-     * Fetcha anime reviews con cache di 24 ore
-     */
+    
+    // Fetcha anime reviews con cache di 24 ore
+    
     public static function getAnimeReviews($mal_id)
     {
         $cacheKey = "anime_reviews_{$mal_id}";
@@ -30,9 +30,9 @@ class JikanCacheService
         });
     }
 
-    /**
-     * Fetcha manga reviews con cache di 24 ore
-     */
+    
+    // Fetcha manga reviews con cache di 24 ore
+    
     public static function getMangaReviews($mal_id)
     {
         $cacheKey = "manga_reviews_{$mal_id}";
@@ -48,17 +48,16 @@ class JikanCacheService
         });
     }
 
-    /**
-     * Pulisce il cache per un anime specifico
-     */
+    
+    // Pulisce il cache per un anime specifico
+    
     public static function clearAnimeCache($mal_id)
     {
         Cache::forget("anime_reviews_{$mal_id}");
     }
 
-    /**
-     * Pulisce il cache per un manga specifico
-     */
+    
+    // Pulisce il cache per un manga specifico
     public static function clearMangaCache($mal_id)
     {
         Cache::forget("manga_reviews_{$mal_id}");

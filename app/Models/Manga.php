@@ -14,7 +14,7 @@ class Manga extends Model
     public $incrementing = false;
     protected $fillable = ['mal_id', 'title', 'image_url', 'banner_url', 'logo_url', 'synopsis', 'score', 'genres'];
 
-    // Cast per convertire genres da JSON a array
+    // cast per convertire genres da JSON a array
     protected $casts = [
         'genres' => 'array',
     ];

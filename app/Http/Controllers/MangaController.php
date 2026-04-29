@@ -13,7 +13,7 @@ class MangaController extends Controller
     {
         $query = Manga::query();
 
-        // Filtra per genere se specificato
+        // Filtra per genere 
         if ($request->has('genre')) {
             $genre = $request->input('genre');
             $query->whereJsonContains('genres', $genre);
@@ -43,8 +43,8 @@ class MangaController extends Controller
             );
         }
 
-        // Prendi le reviews cacheate (opzionale, le view può comunque farle con AlpineJS)
-        // Se vuoi usarle nel backend: $reviews = JikanCacheService::getMangaReviews($mal_id);
+        // Prendo le reviews cacheate (opzionale, le view può comunque farle con AlpineJS)
+        // volendo si possono usare nel backend: $reviews = JikanCacheService::getMangaReviews($mal_id);
 
         return view('manga.show', compact('manga'));
     }

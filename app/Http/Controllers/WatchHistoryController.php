@@ -15,7 +15,7 @@ class WatchHistoryController extends Controller
             ->orderByDesc('watch_date')
             ->paginate(20);
 
-        // Favoriti dell'utente
+        // preferiti dell'utente
         $favoriteAnimeIds = $user->favorites()
             ->where('favoritable_type', \App\Models\Anime::class)
             ->pluck('favoritable_id')

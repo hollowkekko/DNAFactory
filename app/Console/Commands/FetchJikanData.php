@@ -46,7 +46,7 @@ class FetchJikanData extends Command
                 $items = $response->json()['data'] ?? [];
 
                 foreach ($items as $item) {
-                    // Estrai i nomi dei generi
+                    // Estraggo i nomi dei generi come array di stringhe
                     $genres = array_map(fn($g) => $g['name'], $item['genres'] ?? []);
 
                     $modelClass::updateOrCreate(

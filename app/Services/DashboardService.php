@@ -15,9 +15,9 @@ class DashboardService
         $this->aniListService = new AniListService();
     }
 
-    /**
-     * Carica tutti i dati per il carosello anime del dashboard
-     */
+    
+    // carica tutti i dati per il carosello anime del dashboard
+     
     public function getAnimeData(Authenticatable $user): array
     {
         // HERO: 5 anime casuali
@@ -54,12 +54,12 @@ class DashboardService
         ];
     }
 
-    /**
-     * Carica tutti i dati per il carosello manga del dashboard
-     */
+    
+    // carica tutti i dati per il carosello manga del dashboard
+    
     public function getMangaData(Authenticatable $user): array
     {
-        // HERO: 5 manga casuali
+        // HERO: 5 manga casuali (se lo uso)
         $heroMangas = Manga::whereNotNull('synopsis')
             ->inRandomOrder()
             ->take(5)
@@ -93,9 +93,9 @@ class DashboardService
         ];
     }
 
-    /**
-     * Popola banner_url per una collezione di anime/manga
-     */
+    
+    // Popola banner_url per una collezione di anime/manga
+    
     private function populateBannerUrls($items, bool $isManga = false)
     {
         return $items->map(function($item) use ($isManga) {
@@ -117,9 +117,9 @@ class DashboardService
         });
     }
 
-    /**
-     * Ottiene un anime promozionale specifico (per indice)
-     */
+    
+    // Ottiene un anime promozionale specifico (per indice)
+    
     private function getPromotionalAnime(int $index)
     {
         $promotional = Anime::whereNotNull('synopsis')
@@ -139,9 +139,8 @@ class DashboardService
         return $promotional;
     }
 
-    /**
-     * Ottiene un manga promozionale specifico (per indice)
-     */
+    
+    // Ottiene un manga promozionale specifico (per indice)
     private function getPromotionalManga(int $index)
     {
         $promotional = Manga::whereNotNull('synopsis')

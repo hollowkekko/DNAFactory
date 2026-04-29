@@ -230,21 +230,54 @@
     </div>
 
     {{-- Menu Mobile Espanso --}}
-    <div x-show="mobileMenuOpen" class="lg:hidden border-t border-white/10 bg-black/95 backdrop-blur-md" style="display: none;">
+    <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" class="lg:hidden border-t border-white/10 bg-black/95 backdrop-blur-md" style="display: none;">
         <div class="px-4 pt-2 pb-4 space-y-1">
-            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-white/10">Novità</a>
-            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition">Popolari</a>
-            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition">Categorie</a>
-            
-            @auth
-                <div class="border-t border-gray-800 my-2"></div>
-                <a href="{{ route('favorites.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition">Salvati per dopo</a>
-                <a href="{{ route('profile.edit') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition">Impostazioni Profilo</a>
-                <form method="POST" action="{{ route('logout') }}" class="mt-1">
-                    @csrf
-                    <button type="submit" class="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-500 hover:text-red-400 hover:bg-white/5 transition">Esci</button>
-                </form>
-            @endauth
+
+            {{-- Dropdown Esplora Mobile --}}
+            <div class="relative" x-data="{ exploreMobileOpen: false, exploreType: 'anime' }">
+                <button @click="exploreMobileOpen = !exploreMobileOpen" class="w-full text-left flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition">
+                    Esplora
+                    <svg class="w-4 h-4 ml-1 opacity-70 transition-transform duration-300" :class="exploreMobileOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+
+                {{-- Sottomenu Esplora --}}
+                <div x-show="exploreMobileOpen" class="pl-4 space-y-2 mt-1 pb-2">
+                    {{-- Toggle Anime/Manga --}}
+                    <div class="flex gap-2 mb-2">
+                        <button @click="exploreType = 'anime'" :class="exploreType === 'anime' ? 'bg-[#FF6600] text-white' : 'bg-white/10 text-gray-300'" class="flex-1 px-3 py-1.5 rounded text-xs font-semibold hover:bg-[#FF6600] transition">Anime</button>
+                        <button @click="exploreType = 'manga'" :class="exploreType === 'manga' ? 'bg-[#FF6600] text-white' : 'bg-white/10 text-gray-300'" class="flex-1 px-3 py-1.5 rounded text-xs font-semibold hover:bg-[#FF6600] transition">Manga</button>
+                    </div>
+
+                    <div class="h-px bg-gray-700/40"></div>
+
+                    {{-- Link Scopri --}}
+                    <div>
+                        <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 px-1">Scopri</div>
+                        <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['sort' => 'latest']) }}' : '{{ route('manga.index', ['sort' => 'latest']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Novità</a>
+                        <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['sort' => 'popular']) }}' : '{{ route('manga.index', ['sort' => 'popular']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Popolari</a>
+                    </div>
+
+                    <div class="h-px bg-gray-700/40"></div>
+
+                    {{-- Categorie --}}
+                    <div>
+                        <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 px-1">Generi</div>
+                        <div class="space-y-1">
+                            <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Action']) }}' : '{{ route('manga.index', ['genre' => 'Action']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-1.5 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Azione</a>
+                            <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Adventure']) }}' : '{{ route('manga.index', ['genre' => 'Adventure']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-1.5 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Avventura</a>
+                            <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Comedy']) }}' : '{{ route('manga.index', ['genre' => 'Comedy']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-1.5 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Commedia</a>
+                            <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Drama']) }}' : '{{ route('manga.index', ['genre' => 'Drama']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-1.5 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Drammatico</a>
+                            <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Fantasy']) }}' : '{{ route('manga.index', ['genre' => 'Fantasy']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-1.5 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Fantasy</a>
+                            <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Sci-Fi']) }}' : '{{ route('manga.index', ['genre' => 'Sci-Fi']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-1.5 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Fantascienza</a>
+                            <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Horror']) }}' : '{{ route('manga.index', ['genre' => 'Horror']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-1.5 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Horror</a>
+                            <a :href="exploreType === 'anime' ? '{{ route('anime.index', ['genre' => 'Romance']) }}' : '{{ route('manga.index', ['genre' => 'Romance']) }}'" @click="mobileMenuOpen = false" class="block px-3 py-1.5 rounded text-sm text-gray-300 hover:text-white hover:bg-white/5 transition">Romantico</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{{ route('anime.index') }}" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition">Anime</a>
+            <a href="{{ route('manga.index') }}" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 transition">Manga</a>
         </div>
     </div>
 </nav>

@@ -15,7 +15,7 @@ class ReadHistoryController extends Controller
             ->orderByDesc('read_date')
             ->paginate(20);
 
-        // Preferiti dell'utente
+        // preferiti dell'utente
         $favoriteMangaIds = $user->favorites()
             ->where('favoritable_type', \App\Models\Manga::class)
             ->pluck('favoritable_id')

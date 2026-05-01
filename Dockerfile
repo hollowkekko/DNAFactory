@@ -29,4 +29,4 @@ RUN npm install && npm run build
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Cambiamo "migrate" in "migrate:fresh" per ricostruire le tabelle correttamente
-CMD sh -c "php artisan migrate:fresh --force && php artisan jikan:fetch --pages=2 && apache2-foreground"
+CMD sh -c "php artisan migrate --force && apache2-foreground"

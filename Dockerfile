@@ -28,5 +28,5 @@ RUN npm install && npm run build
 # 7. Permessi cartelle storage e cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Correzione del comando: da fetch:jikan a jikan:fetch
-CMD sh -c "php artisan migrate --force && php artisan jikan:fetch --pages=4 && apache2-foreground"
+# Cambiamo "migrate" in "migrate:fresh" per ricostruire le tabelle correttamente
+CMD sh -c "php artisan migrate:fresh --force && php artisan jikan:fetch --pages=2 && apache2-foreground"

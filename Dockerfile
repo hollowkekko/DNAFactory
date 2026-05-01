@@ -28,5 +28,5 @@ RUN npm install && npm run build
 # 7. Permessi cartelle storage e cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Questo comando esegue le migrazioni, popola i dati e avvia il server
-CMD sh -c "php artisan migrate --force && php artisan fetch:jikan && apache2-foreground"
+# Correzione del comando: da fetch:jikan a jikan:fetch
+CMD sh -c "php artisan migrate --force && php artisan jikan:fetch --pages=4 && apache2-foreground"

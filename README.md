@@ -47,13 +47,11 @@ Oltre ai requisiti minimi richiesti, ho implementato ulteriori feature per ottim
 
 ### Installazione Veloce
 
-1. **Clona il repository e installa le dipendenze:**
+1. **Estrai il file ZIP e installa le dipendenze:**
+   Apri il terminale all'interno della cartella del progetto estratta ed esegui:
    ```bash
-   git clone <inserisci-url-o-nome-repo>
-   cd DNAFactory
    composer install
    npm install
-   ```
 
 2. **Configura l'ambiente:** 
     ```bash
